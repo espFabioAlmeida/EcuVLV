@@ -70,8 +70,8 @@ COMPORTAS: Feedback do valor recebido <br>
 HASTE: Feedback do valor recebido <br>
 <br>
 Comando 2: Configurações: $,02,SP_ADUBO,SP_SEMENTE,LARGURA_MAQUINA,+OFFSET_VELOCIDADE,TIPO_SENSOR,VELOCIDADE_CONTINGENCIA,\r\n <br>
-SP_ADUBO: Setpoint Adubo em kg/ha <br>
-SP_SEMENTE: Setpoint Sementes em kg/ha <br>
+SP_ADUBO: Setpoint Adubo em kg/ha. Entre 0 e 9999<br>
+SP_SEMENTE: Setpoint Sementes em kg/ha. Entre 0 e 9999 <br>
 LARGURA_MAQUINA: Largura da máquina em cm. Entre  100cm e 999999cm <br>
 OFFSET_VELOIDADE: Velocidade que será somada. Enviar '+' ou '-' antes do valor, exemplo +5. Entre -9 e +9 km/h <br>
 TIPO_SENSOR: 0=SENSOR GPS ou 1=SENSOR DE PULSOS <br>
