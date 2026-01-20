@@ -30,6 +30,21 @@ TAREFAS 100ms
 void tarefas100ms() {
 	reiniciaWatchDog();
 
+	if(flagLedCOM) {
+		off(LED_COM1_GPIO_Port, LED_COM1_Pin);
+		flagLedCOM = false;
+	}
+	else {
+		on(LED_COM1_GPIO_Port, LED_COM1_Pin);
+	}
+
+	if(flagLedIHM) {
+		off(LED_IHM_GPIO_Port, LED_IHM_Pin);
+		flagLedIHM = false;
+	}
+	else {
+		on(LED_IHM_GPIO_Port, LED_IHM_Pin);
+	}
 }
 /*==============================================================================
 TAREFAS 1s

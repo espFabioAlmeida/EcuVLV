@@ -15,6 +15,8 @@ enum BOOL {
 	true
 };
 
+#define TAMANHO_BUFFER_IHM 				128
+#define TAMANHO_BUFFER_SENSOR_ACIDEZ	32
 
 extern CAN_HandleTypeDef hcan;
 extern I2C_HandleTypeDef hi2c1;
@@ -26,13 +28,46 @@ extern CAN_RxHeaderTypeDef	canRxHeader;
 extern uint8_t
 	flagPacoteCAN,
 	flagEnviaPacoteCAN,
-	flagLedCOM;
+	flagPacoteIHM,
+	flagLedCOM,
+	flagLedIHM,
+
+	flagAcionamentoS1,
+	flagAcionamentoS2,
+	flagAcionamentoS3,
+	flagAcionamentoS4;
+
+extern uint8_t
+	velocidade,
+
+	comandoComportas,
+
+	contadorBufferIHM,
+	contadorBufferSensorAcidez;
+
+extern char
+	ihmDataIn,
+	sensorAcidezDataIn;
+
+extern uint16_t
+	alturaHaste,
+	acidez;
 
 extern uint32_t
-	canTxMailbox;
+	canTxMailbox,
+
+	setpointAdubo,
+	setpointSemente,
+
+	hectarimetro;
 
 extern uint8_t
 	canTxBuffer[8],
 	canRxBuffer[8];
 
+extern char
+	bufferIHM[TAMANHO_BUFFER_IHM],
+	bufferEnviaIHM[TAMANHO_BUFFER_IHM],
+
+	bufferSensorAvidez[TAMANHO_BUFFER_SENSOR_ACIDEZ];
 #endif /* INC_GLOBAL_H_ */

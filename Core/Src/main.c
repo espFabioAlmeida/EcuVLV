@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "global.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,15 +65,48 @@ CAN_RxHeaderTypeDef	canRxHeader;
 uint8_t
 	flagPacoteCAN = false,
 	flagEnviaPacoteCAN = false,
-	flagLedCOM = false;
+	flagPacoteIHM = false,
+	flagLedCOM = false,
+	flagLedIHM = false,
+
+	flagAcionamentoS1 = true,
+	flagAcionamentoS2 = true,
+	flagAcionamentoS3 = true,
+	flagAcionamentoS4 = true;
+
+uint8_t
+	velocidade = 0,
+
+	comandoComportas = 0,
+
+	contadorBufferIHM = 0,
+	contadorBufferSensorAcidez = 0;
+
+char
+	ihmDataIn = 0,
+	sensorAcidezDataIn = 0;
+
+uint16_t
+	alturaHaste = 0,
+	acidez = 0;
 
 uint32_t
-	canTxMailbox;
+	canTxMailbox,
+
+	setpointAdubo = 10,
+	setpointSemente = 10,
+
+	hectarimetro = 0;
 
 uint8_t
 	canTxBuffer[8],
 	canRxBuffer[8];
 
+char
+	bufferIHM[TAMANHO_BUFFER_IHM],
+	bufferEnviaIHM[TAMANHO_BUFFER_IHM],
+
+	bufferSensorAvidez[TAMANHO_BUFFER_SENSOR_ACIDEZ];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,6 +132,34 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if(htim == &htim3) {
 		schedulerEngine();
 	}
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+
+	if(huart-> Instance==UART7) { // IHM
+		bufferIHM[contadorBufferIHM] = ihmDataIn;
+		contadorBufferIHM ++;
+
+		if(contadorBufferIHM >= TAMANHO_BUFFER_IHM) {
+			apagaBufferIHM();
+		}
+
+		if(ihmDataIn == 0x0A) {
+			flagPacoteIHM = true;
+		}
+	}
+
+	if(huart-> Instance==USART3) { // Sensor de acidez
+		bufferSensorAvidez[contadorBufferSensorAcidez] = sensorAcidezDataIn;
+		contadorBufferSensorAcidez ++;
+
+		if(contadorBufferSensorAcidez >= TAMANHO_BUFFER_SENSOR_ACIDEZ) {
+			apagaBufferSensorAcidez();
+		}
+
+		//TODO: VERIFICAR A FORMA QUE INDETIFICA O FIM DOS DADOS RECEBIDOS
+	}
+
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hCan) {
@@ -164,6 +226,9 @@ int main(void)
 
   HAL_TIM_Base_Start(&htim2); //Timer do delay us
   HAL_TIM_Base_Start_IT(&htim3); //Timer do Scheduller
+
+  HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
+  HAL_UART_Receive_DMA(&huart7, &ihmDataIn, 1); //IHM
 
   /* USER CODE END 2 */
 
