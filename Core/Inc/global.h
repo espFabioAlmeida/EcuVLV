@@ -18,9 +18,28 @@ enum BOOL {
 #define TAMANHO_BUFFER_IHM 				128
 #define TAMANHO_BUFFER_SENSOR_ACIDEZ	32
 
+enum COMANDO_COMPORTAS {
+	PARAR_COMPORTAS,
+	FECHAR_COMPORTAS,
+	ABRIR_COMPORTAS,
+
+	ERRO_COMPORTAS
+};
+
+enum COMANDO_HASTE {
+	PARAR_HASTE,
+	SUBIR_HASTE,
+	DESCER_HASTE,
+
+	ERRO_HASTE
+};
+
 extern CAN_HandleTypeDef hcan;
 extern I2C_HandleTypeDef hi2c1;
 extern RTC_HandleTypeDef hrtc;
+extern UART_HandleTypeDef huart7;
+extern UART_HandleTypeDef huart8;
+extern UART_HandleTypeDef huart3;
 
 extern CAN_TxHeaderTypeDef	canTxHeader;
 extern CAN_RxHeaderTypeDef	canRxHeader;
@@ -38,9 +57,11 @@ extern uint8_t
 	flagAcionamentoS4;
 
 extern uint8_t
+	operacao,
 	velocidade,
 
 	comandoComportas,
+	comandoHaste,
 
 	contadorBufferIHM,
 	contadorBufferSensorAcidez;

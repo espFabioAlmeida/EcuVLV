@@ -75,9 +75,11 @@ uint8_t
 	flagAcionamentoS4 = true;
 
 uint8_t
+	operacao = 0,
 	velocidade = 0,
 
-	comandoComportas = 0,
+	comandoComportas = PARAR_COMPORTAS,
+	comandoHaste = PARAR_HASTE,
 
 	contadorBufferIHM = 0,
 	contadorBufferSensorAcidez = 0;
@@ -236,6 +238,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
