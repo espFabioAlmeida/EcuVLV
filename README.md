@@ -50,3 +50,52 @@ O operador pode controlar manualmente a descida da haste. <br>
 <br>
 O sistema de controle da haste deve ser calibrado com a quantidade de pulsos da régua + 1(fim de curso). <br>
 O operador deve informar o comprimento total da haste (Fundo de escala). <br>
+
+# Protocolo IHM
+Comando 1: Atualziação dos comandos e dados: $,01,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,\r\n <br>
+OPERACAO: 0=SEM OPERAÇÃO, +1 VOLLVERINI ATIVADO, +2 ADUBO ATIVADO e +4 SEMENTES ATIVADO <br>
+S1,S2,S3,4: 0=DESLIGADO e 1=LIGADO <br>
+COMPORTAS: 0=PARADO, 1=FECHAR e 2=ABRIR <br>
+HASTE: 0=PARADO, 1=SUBIR e 2=DESCER Obs: A haste só opera manualmente com o sensor de levante desligado<br>
+Resposta: $,01,SP_ADUBO,SP_SEMENTE,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,<br>
+SP_ADUBO: Setpoint Adubo em kg/ha <br>
+SP_SEMENTE: Setpoint Sementes em kg/ha <br>
+VELOCIDADE: Velocidade da máquina em km/h <br>
+ALTURA: Altura da haste em cm <br>
+ACIDEZ: Medição do sensor de acidez (verificar unidade) <br>
+HECTARÍMETRO: Valor total aplicado em ha (número grande) <br>
+OPERACAO: Feedback do valor recebido <br>
+S1,S2,S3,S4: Feedback do valor recebido <br>
+COMPORTAS: Feedback do valor recebido <br>
+HASTE: Feedback do valor recebido <br>
+<br>
+Comando 2: Configurações: $,02,SP_ADUBO,SP_SEMENTE,LARGURA_MAQUINA,+OFFSET_VELOCIDADE,TIPO_SENSOR,VELOCIDADE_CONTINGENCIA,\r\n <br>
+SP_ADUBO: Setpoint Adubo em kg/ha <br>
+SP_SEMENTE: Setpoint Sementes em kg/ha <br>
+LARGURA_MAQUINA: Largura da máquina em cm. Entre  100cm e 999999cm <br>
+OFFSET_VELOIDADE: Velocidade que será somada. Enviar '+' ou '-' antes do valor, exemplo +5. Entre -9 e +9 km/h <br>
+TIPO_SENSOR: 0=SENSOR GPS ou 1=SENSOR DE PULSOS <br>
+VELOCIDADE_CONTINGENCIA: Velocidade assumida em cada de erro de leitura de velocidade em km/h. Entre 0km/h e 15km/h <br>
+Resposta: Retorna os mesmos dados enviados apenas para conferência <br>
+<br>
+Comando 3: Leitura Configurações: $,03,\r\n <br>
+Resposta: Envia os mesmos dados, na mesma ordem, do comando 2. <br>
+<br>
+Comando 4: Acionamento Calibração: $,04,COMANDO_CALIBRACAO,\r\n <br>
+COMANDO_CALIBRACAO: 0=SEM COMANDO OU CANCELAR CALIBRACAO, 1=ACIONA_10_ADUBO, 2=ACIONA_40_ADUBO, 3=ACIONA_70_ADUBO, 4=ACIONA_100_ADUBO, 5=ACIONA_10_SEMENTE, 6=ACIONA_40_SEMENTE, 7=ACIONA_70_SEMENTE e 8=ACIONA_100_SEMENTE <br>
+Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
+<br>
+Comando 5: $,05,ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100,SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100,\r\n <br>
+ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100: Valores de calibração em g/min do adubo. Entre 0 e 60000g/min <br>
+SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100: Valores de calibração em g/min da semente. Entre 0 e 60000g/min <br>
+Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
+<br>
+Comando 6: $,06,\r\n <br>
+Respsota: Envia os mesmos dados, na mesma ordem, do comando 5. <br>
+<br>
+Comando 7: $,07,CALIBRACAO_SENSOR_PULSOS,\r\n <br>
+CALIBRACAO_SENSOR_PULSOS: 0=CANCELAR CALIBRACAO, 1=INICIAR CALIBRAÇÃO e 2=FINALIZAR CALIBRAÇÃO <br>
+É importante informar ao usuário que ao iniciar a calibração ele deve andar com a máquina 100m. <br>
+Resposta: Ao cancelar ou iniciar apenas retorna os mesmos dados enviados para conferência. Quando enviar o comando para finalizar a calibração. O sistema enviará: $,07,PULSOS,\r\n <br>
+PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calibração. <br>
+<br>
