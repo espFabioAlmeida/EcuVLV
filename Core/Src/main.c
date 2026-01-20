@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "global.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +58,20 @@ DMA_HandleTypeDef hdma_uart7_rx;
 DMA_HandleTypeDef hdma_usart3_rx;
 
 /* USER CODE BEGIN PV */
+CAN_TxHeaderTypeDef	canTxHeader;
+CAN_RxHeaderTypeDef	canRxHeader;
+
+uint8_t
+	flagPacoteCAN = false,
+	flagEnviaPacoteCAN = false,
+	flagLedCOM = false;
+
+uint32_t
+	canTxMailbox;
+
+uint8_t
+	canTxBuffer[8],
+	canRxBuffer[8];
 
 /* USER CODE END PV */
 
@@ -80,7 +94,28 @@ static void MX_UART8_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	if(htim == &htim3) {
+		schedulerEngine();
+	}
+}
 
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hCan) {
+	if(hCan == &hcan1) {
+		HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &canRxHeader, canRxBuffer);
+		flagPacoteCAN = true;
+	}
+}
+
+void delayMicro(uint32_t tempo) {
+	__HAL_TIM_SET_COUNTER(&htim2, 0);
+	while(__HAL_TIM_GET_COUNTER(&htim2) < tempo) {
+	}
+}
+
+void reiniciaWatchDog() {
+	HAL_IWDG_Refresh(&hiwdg);
+}
 /* USER CODE END 0 */
 
 /**
@@ -123,6 +158,12 @@ int main(void)
   MX_USART3_UART_Init();
   MX_UART8_Init();
   /* USER CODE BEGIN 2 */
+  HAL_CAN_Start(&hcan1);
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+  //Alterações no CAN INIT
+
+  HAL_TIM_Base_Start(&htim2); //Timer do delay us
+  HAL_TIM_Base_Start_IT(&htim3); //Timer do Scheduller
 
   /* USER CODE END 2 */
 
@@ -200,6 +241,13 @@ static void MX_CAN1_Init(void)
 {
 
   /* USER CODE BEGIN CAN1_Init 0 */
+	//calculo da configuração de velocidade
+	//http://www.bittiming.can-wiki.info/
+	//Selecionar ST e colocar a velocidade do clock (do APB1 ou do barramento correspondente a CAN)
+	//gerar tabela e pegar os calores de prescaler, seg1 e seg2
+	CAN_FilterTypeDef  sFilterConfig; //Inserido
+
+	//hcan.Init.AutoRetransmission = ENABLE; --> Deve estar em ENABLE
 
   /* USER CODE END CAN1_Init 0 */
 
@@ -223,6 +271,26 @@ static void MX_CAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN1_Init 2 */
+  //Inserido abaixo
+
+  sFilterConfig.FilterBank = 0;
+  sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  sFilterConfig.FilterIdHigh = 0x0000;
+  sFilterConfig.FilterIdLow = 0x0000;
+  sFilterConfig.FilterMaskIdHigh = 0x0000;
+  sFilterConfig.FilterMaskIdLow = 0x0000;
+  sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+  sFilterConfig.FilterActivation = ENABLE;
+  sFilterConfig.SlaveStartFilterBank = 14;
+
+  if(HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK) {
+	  Error_Handler();
+  }
+
+  if(HAL_CAN_Start(&hcan1) != HAL_OK) {
+	  Error_Handler();
+  }
 
   /* USER CODE END CAN1_Init 2 */
 
