@@ -85,17 +85,20 @@ Comando 4: Acionamento Calibração: $,04,COMANDO_CALIBRACAO,\r\n <br>
 COMANDO_CALIBRACAO: 0=SEM COMANDO OU CANCELAR CALIBRACAO, 1=ACIONA_10_ADUBO, 2=ACIONA_40_ADUBO, 3=ACIONA_70_ADUBO, 4=ACIONA_100_ADUBO, 5=ACIONA_10_SEMENTE, 6=ACIONA_40_SEMENTE, 7=ACIONA_70_SEMENTE e 8=ACIONA_100_SEMENTE <br>
 Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
 <br>
-Comando 5: $,05,ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100,SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100,\r\n <br>
+Comando 5: Enviar dados da calibração: $,05,ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100,SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100,\r\n <br>
 ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100: Valores de calibração em g/min do adubo. Entre 0 e 60000g/min <br>
 SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100: Valores de calibração em g/min da semente. Entre 0 e 60000g/min <br>
 Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
 <br>
-Comando 6: $,06,\r\n <br>
+Comando 6: Leitura de dados da calibração: $,06,\r\n <br>
 Respsota: Envia os mesmos dados, na mesma ordem, do comando 5. <br>
 <br>
-Comando 7: $,07,CALIBRACAO_SENSOR_PULSOS,\r\n <br>
+Comando 7: Calibração do sensor de pulsos: $,07,CALIBRACAO_SENSOR_PULSOS,\r\n <br>
 CALIBRACAO_SENSOR_PULSOS: 0=CANCELAR CALIBRACAO, 1=INICIAR CALIBRAÇÃO e 2=FINALIZAR CALIBRAÇÃO <br>
 É importante informar ao usuário que ao iniciar a calibração ele deve andar com a máquina 100m. <br>
 Resposta: Ao cancelar ou iniciar apenas retorna os mesmos dados enviados para conferência. Quando enviar o comando para finalizar a calibração. O sistema enviará: $,07,PULSOS,\r\n <br>
 PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calibração. <br>
+<br>
+Comando 8: Zerar o Hectarímetro: $,09,\r\n <br>
+Resposta: Envia o mesmos dados. Confirmando a operação <br>
 <br>
