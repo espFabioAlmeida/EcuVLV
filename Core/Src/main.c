@@ -62,6 +62,9 @@ DMA_HandleTypeDef hdma_usart3_rx;
 CAN_TxHeaderTypeDef	canTxHeader;
 CAN_RxHeaderTypeDef	canRxHeader;
 
+DTOBufferTypeDef
+	bufferIHMDTO;
+
 uint8_t
 	flagPacoteCAN = false,
 	flagEnviaPacoteCAN = false,
@@ -72,11 +75,16 @@ uint8_t
 	flagAcionamentoS1 = true,
 	flagAcionamentoS2 = true,
 	flagAcionamentoS3 = true,
-	flagAcionamentoS4 = true;
+	flagAcionamentoS4 = true,
+
+	flagOffsetVelocidadeNegativo = false;
 
 uint8_t
 	operacao = 0,
 	velocidade = 0,
+	offsetVelocidade = 0,
+	tipoSensorVelocidade = SENSOR_GPS,
+	velocidadeContingencia = 8,
 
 	comandoComportas = PARAR_COMPORTAS,
 	comandoHaste = PARAR_HASTE,
@@ -97,7 +105,7 @@ uint32_t
 
 	setpointAdubo = 10,
 	setpointSemente = 10,
-
+	larguraMaquina = 100,
 	hectarimetro = 0;
 
 uint8_t

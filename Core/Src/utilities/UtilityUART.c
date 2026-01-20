@@ -26,6 +26,25 @@ void apagaBufferIHM() {
 	contadorBufferIHM = 0;
 	memset(bufferIHM, 0x00, TAMANHO_BUFFER_IHM);
 }
+/*=============================================================================
+SPRINTF IHM
+==============================================================================*/
+void getValueBufferIHM(uint8_t offset, char separador) {
+	bufferIHMDTO.data = 0;
+	bufferIHMDTO.erro = false;
+	bufferIHMDTO.offset = offset;
+
+	for(; bufferIHM[offset] != separador; bufferIHMDTO.offset ++) {
+		if(bufferIHMDTO.offset  >= TAMANHO_BUFFER_IHM) {
+			bufferIHMDTO.data = 0;
+			bufferIHMDTO.erro = true;
+			return;
+		}
+
+		bufferIHMDTO.data *= 10;
+		bufferIHMDTO.data += charToByte(bufferIHM[bufferIHMDTO.offset ]);
+	}
+}
 /*==============================================================================
 APAGA BUFFER ENVIO IHM
 ==============================================================================*/

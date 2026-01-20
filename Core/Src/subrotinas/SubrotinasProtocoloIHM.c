@@ -47,6 +47,26 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			sprintfIHM(comandoHaste, 0);
 			break;
 
+		case 2:
+			sprintfIHM(setpointAdubo, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(setpointSemente, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(larguraMaquina, 0);
+			strcat(bufferEnviaIHM, ",");
+			if(flagOffsetVelocidadeNegativo) {
+				strcat(bufferEnviaIHM, "-");
+			}
+			else {
+				strcat(bufferEnviaIHM, "+");
+			}
+			sprintfIHM(offsetVelocidade, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(tipoSensorVelocidade, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(velocidadeContingencia, 0);
+			break;
+
 		default: return;
 	}
 
@@ -83,6 +103,79 @@ void protocoloIHMAtualizacaoDados(uint8_t offset) {
 	protocoloIHMEnviaResposta(1);
 }
 /*==============================================================================
+CONFIGURAÇÕES
+==============================================================================*/
+void protocoloIHMConfiguracoes(uint8_t offset) {
+	getValueBufferIHM(offset + 5, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	setpointAdubo = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	setpointSemente = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	larguraMaquina = bufferIHMDTO.data;
+
+	bufferIHMDTO.offset ++;
+	if(bufferIHM[bufferIHMDTO.offset] == '-') {
+		flagOffsetVelocidadeNegativo = true;
+	}
+	else {
+		flagOffsetVelocidadeNegativo = false;
+	}
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	offsetVelocidade = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	tipoSensorVelocidade = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	velocidadeContingencia = bufferIHMDTO.data;
+
+	//Validação dos dados
+	if(setpointAdubo > MAXIMO_VALOR_SETPOINT) {
+		setpointAdubo = 0;
+	}
+	if(setpointSemente > MAXIMO_VALOR_SETPOINT) {
+		setpointSemente = 0;
+	}
+	if(larguraMaquina > MAXIMA_LARGURA_MAQUINA ||
+			larguraMaquina < MINIMA_LARGURA_MAQUINA) {
+		larguraMaquina = MINIMA_LARGURA_MAQUINA;
+	}
+	if(offsetVelocidade > MAXIMO_OFFSET_VELOCIDADE) {
+		offsetVelocidade = 0;
+	}
+	if(tipoSensorVelocidade >= ERRO_TIPO_SENSOR_VELOCIDADE) {
+		tipoSensorVelocidade = SENSOR_GPS;
+	}
+	if(velocidadeContingencia > MAXIMA_VELOCIDADE_CONTINGENCIA) {
+		velocidadeContingencia = 0;
+	}
+
+	//TODO SALVAR EEPROM
+
+	protocoloIHMEnviaResposta(2);
+}
+/*==============================================================================
 PROTOCOLO IHM
 ==============================================================================*/
 void protocoloIHM() {
@@ -98,6 +191,7 @@ void protocoloIHM() {
 
 		switch(comando) {
 			case 1: protocoloIHMAtualizacaoDados(offset); break;
+			case 2: protocoloIHMConfiguracoes(offset); break;
 		}
 
 	}

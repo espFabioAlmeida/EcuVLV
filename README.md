@@ -75,7 +75,7 @@ SP_SEMENTE: Setpoint Sementes em kg/ha. Entre 0 e 9999 <br>
 LARGURA_MAQUINA: Largura da máquina em cm. Entre  100cm e 999999cm <br>
 OFFSET_VELOIDADE: Velocidade que será somada. Enviar '+' ou '-' antes do valor, exemplo +5. Entre -9 e +9 km/h <br>
 TIPO_SENSOR: 0=SENSOR GPS ou 1=SENSOR DE PULSOS <br>
-VELOCIDADE_CONTINGENCIA: Velocidade assumida em cada de erro de leitura de velocidade em km/h. Entre 0km/h e 15km/h <br>
+VELOCIDADE_CONTINGENCIA: Velocidade assumida em cada de erro de leitura de velocidade em km/h. Entre 0km/h e 20km/h <br>
 Resposta: Retorna os mesmos dados enviados apenas para conferência <br>
 <br>
 Comando 3: Leitura Configurações: $,03,\r\n <br>
