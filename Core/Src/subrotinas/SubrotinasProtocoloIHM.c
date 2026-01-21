@@ -207,7 +207,7 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 		velocidadeContingencia = 0;
 	}
 
-	//TODO SALVAR EEPROM
+	writeEepromConfiguracoes();
 
 	protocoloIHMEnviaResposta(2);
 }
@@ -301,7 +301,7 @@ void protocoloIHMValoresCalibracao(uint8_t offset) {
 		calibracaoSemente100 = MAXIMO_VALOR_CALIBRACAO;
 	}
 
-	//TODO: SALVAR EEPROM
+	writeEepromCalibracao();
 
 	protocoloIHMEnviaResposta(5);
 }
@@ -322,7 +322,7 @@ ZERAR HECTARIMETRO
 ==============================================================================*/
 void protocoloIHMZerarHectarimetro(uint8_t offset) {
 	hectarimetro = 0;
-	//TODO: SALVAR EEPROM
+	writeEepromHectarimetro();
 	protocoloIHMEnviaResposta(8);
 }
 /*==============================================================================

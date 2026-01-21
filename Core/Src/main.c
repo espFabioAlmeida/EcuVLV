@@ -249,6 +249,9 @@ int main(void)
   HAL_TIM_Base_Start(&htim2); //Timer do delay us
   HAL_TIM_Base_Start_IT(&htim3); //Timer do Scheduller
 
+  verificaEeprom();
+  readEeprom();
+
   HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
   HAL_UART_Receive_DMA(&huart7, &ihmDataIn, 1); //IHM
 
