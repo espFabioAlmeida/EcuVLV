@@ -99,7 +99,17 @@ char
 
 uint16_t
 	alturaHaste = 0,
-	acidez = 0;
+	acidez = 0,
+
+	calibracaoAdubo10 = 10,
+	calibracaoAdubo40 = 40,
+	calibracaoAdubo70 = 70,
+	calibracaoAdubo100 = 100,
+
+	calibracaoSemente10 = 10,
+	calibracaoSemente40 = 40,
+	calibracaoSemente70 = 70,
+	calibracaoSemente100 = 100;
 
 uint32_t
 	canTxMailbox,

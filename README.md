@@ -86,8 +86,8 @@ COMANDO_CALIBRACAO: 0=SEM COMANDO OU CANCELAR CALIBRACAO, 1=ACIONA_10_ADUBO, 2=A
 Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
 <br>
 Comando 5: Enviar dados da calibração: $,05,ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100,SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100,\r\n <br>
-ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100: Valores de calibração em g/min do adubo. Entre 0 e 60000g/min <br>
-SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100: Valores de calibração em g/min da semente. Entre 0 e 60000g/min <br>
+ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100: Valores de calibração em g/min do adubo. Entre 0 e 999999g/min <br>
+SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100: Valores de calibração em g/min da semente. Entre 0 e 999999g/min <br>
 Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
 <br>
 Comando 6: Leitura de dados da calibração: $,06,\r\n <br>

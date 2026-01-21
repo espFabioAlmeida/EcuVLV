@@ -72,6 +72,26 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			sprintfIHM(comandoCalibracaoMaterial, 0);
 			break;
 
+		case 5:
+		case 6:
+			sprintfIHM(calibracaoAdubo10, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoAdubo40, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoAdubo70, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoAdubo100, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoSemente10, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoSemente40, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoSemente70, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoSemente100, 0);
+			strcat(bufferEnviaIHM, ",");
+			break;
+
 		default: return;
 	}
 
@@ -183,7 +203,7 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 /*==============================================================================
 ACIONAMENTO CALIBRAÇÃO
 ==============================================================================*/
-void protocoloIHMCalibracao(uint8_t offset) {
+void protocoloIHMAcionamentoCalibracao(uint8_t offset) {
 	comandoCalibracaoMaterial = charToByte(bufferIHM[offset + 5]);
 
 	if(comandoCalibracaoMaterial >= ERRO_COMANDO_CALIBRACAO) {
@@ -191,6 +211,88 @@ void protocoloIHMCalibracao(uint8_t offset) {
 	}
 
 	protocoloIHMEnviaResposta(4);
+}
+/*==============================================================================
+VALORES DE CALIBRAÇÃO
+==============================================================================*/
+void protocoloIHMValoresCalibracao(uint8_t offset) {
+	getValueBufferIHM(offset + 5, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoAdubo10 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoAdubo40 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoAdubo70 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoAdubo100 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoSemente10 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoSemente40 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoSemente70 = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	calibracaoSemente100 = bufferIHMDTO.data;
+
+	//Validação dos valores
+	if(calibracaoAdubo10 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoAdubo10 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoAdubo40 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoAdubo40 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoAdubo70 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoAdubo70 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoAdubo100 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoAdubo100 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoSemente10 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoSemente10 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoSemente40 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoSemente40 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoSemente70 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoSemente70 = MAXIMO_VALOR_CALIBRACAO;
+	}
+	if(calibracaoSemente100 > MAXIMO_VALOR_CALIBRACAO) {
+		calibracaoSemente100 = MAXIMO_VALOR_CALIBRACAO;
+	}
+
+	//TODO: SALVAR EEPROM
+
+	protocoloIHMEnviaResposta(5);
 }
 /*==============================================================================
 PROTOCOLO IHM
@@ -210,7 +312,9 @@ void protocoloIHM() {
 			case 1: protocoloIHMAtualizacaoDados(offset); break;
 			case 2: protocoloIHMConfiguracoes(offset); break;
 			case 3: protocoloIHMEnviaResposta(3); break;
-			case 4: protocoloIHMCalibracao(offset); break;
+			case 4: protocoloIHMAcionamentoCalibracao(offset); break;
+			case 5: protocoloIHMValoresCalibracao(offset); break;
+			case 6: protocoloIHMEnviaResposta(6); break;
 		}
 
 	}

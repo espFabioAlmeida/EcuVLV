@@ -23,6 +23,7 @@ enum BOOL {
 #define MINIMA_LARGURA_MAQUINA			100
 #define MAXIMO_OFFSET_VELOCIDADE		9
 #define MAXIMA_VELOCIDADE_CONTINGENCIA	20
+#define MAXIMO_VALOR_CALIBRACAO			999999
 
 enum COMANDO_COMPORTAS {
 	PARAR_COMPORTAS,
@@ -115,7 +116,17 @@ extern char
 
 extern uint16_t
 	alturaHaste,
-	acidez;
+	acidez,
+
+	calibracaoAdubo10,
+	calibracaoAdubo40,
+	calibracaoAdubo70,
+	calibracaoAdubo100,
+
+	calibracaoSemente10,
+	calibracaoSemente40,
+	calibracaoSemente70,
+	calibracaoSemente100;
 
 extern uint32_t
 	canTxMailbox,
