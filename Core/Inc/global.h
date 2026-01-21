@@ -49,7 +49,7 @@ enum TIPO_SENSOR_VELOCIDADE {
 };
 
 enum COMANDO_CALIBRACAO_MATERIAL {
-	CANCELAR_CALIBRACAO,
+	CANCELAR_CALIBRACAO_MATERIAL,
 	ACIONA_ADUBO_10,
 	ACIONA_ADUBO_40,
 	ACIONA_ADUBO_70,
@@ -60,7 +60,15 @@ enum COMANDO_CALIBRACAO_MATERIAL {
 	ACIONA_SEMENTE_70,
 	ACIONA_SEMENTE_100,
 
-	ERRO_COMANDO_CALIBRACAO
+	ERRO_COMANDO_CALIBRACAO_MATERIAL
+};
+
+enum COMANDO_CALIBRACAO_PULSOS {
+	CANCELAR_CALIBRACAO_PULSOS,
+	INICIAR_CALIBRACAO_PULSOS,
+	FINALIZAR_CALIBRACAO_PULSOS,
+
+	ERRO_COMANDO_CALIBRACAO_PULSOS
 };
 
 typedef struct {
@@ -104,6 +112,7 @@ extern uint8_t
 	velocidadeContingencia,
 
 	comandoCalibracaoMaterial,
+	comandoCalibracaoPulsos,
 	comandoComportas,
 	comandoHaste,
 
@@ -116,7 +125,15 @@ extern char
 
 extern uint16_t
 	alturaHaste,
-	acidez,
+	acidez;
+
+extern uint32_t
+	canTxMailbox,
+
+	setpointAdubo,
+	setpointSemente,
+	larguraMaquina,
+	hectarimetro,
 
 	calibracaoAdubo10,
 	calibracaoAdubo40,
@@ -127,14 +144,6 @@ extern uint16_t
 	calibracaoSemente40,
 	calibracaoSemente70,
 	calibracaoSemente100;
-
-extern uint32_t
-	canTxMailbox,
-
-	setpointAdubo,
-	setpointSemente,
-	larguraMaquina,
-	hectarimetro;
 
 extern uint8_t
 	canTxBuffer[8],

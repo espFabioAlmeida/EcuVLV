@@ -45,6 +45,7 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			sprintfIHM(comandoComportas, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(comandoHaste, 0);
+			strcat(bufferEnviaIHM, ",");
 			break;
 
 		case 2:
@@ -66,10 +67,12 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			sprintfIHM(tipoSensorVelocidade, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(velocidadeContingencia, 0);
+			strcat(bufferEnviaIHM, ",");
 			break;
 
 		case 4:
 			sprintfIHM(comandoCalibracaoMaterial, 0);
+			strcat(bufferEnviaIHM, ",");
 			break;
 
 		case 5:
@@ -92,11 +95,19 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			break;
 
+		case 7:
+			sprintfIHM(comandoCalibracaoPulsos, 0);
+			strcat(bufferEnviaIHM, ",");
+			break;
+
+		case 8:
+			break;
+
 		default: return;
 	}
 
 
-	strcat(bufferEnviaIHM, ",\r\n");
+	strcat(bufferEnviaIHM, "\r\n");
 
 	HAL_UART_Transmit(&huart7, &bufferEnviaIHM, strlen(bufferEnviaIHM), 200);
 }
@@ -206,8 +217,8 @@ ACIONAMENTO CALIBRAÇÃO
 void protocoloIHMAcionamentoCalibracao(uint8_t offset) {
 	comandoCalibracaoMaterial = charToByte(bufferIHM[offset + 5]);
 
-	if(comandoCalibracaoMaterial >= ERRO_COMANDO_CALIBRACAO) {
-		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO;
+	if(comandoCalibracaoMaterial >= ERRO_COMANDO_CALIBRACAO_MATERIAL) {
+		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
 	}
 
 	protocoloIHMEnviaResposta(4);
@@ -295,6 +306,26 @@ void protocoloIHMValoresCalibracao(uint8_t offset) {
 	protocoloIHMEnviaResposta(5);
 }
 /*==============================================================================
+CALIBRAÇÃO PULSOS
+==============================================================================*/
+void protocoloIHMCalibracaoPulsos(uint8_t offset) {
+	comandoCalibracaoPulsos = charToByte(bufferIHM[offset + 5]);
+
+	if(comandoCalibracaoPulsos > ERRO_COMANDO_CALIBRACAO_PULSOS) {
+		comandoCalibracaoPulsos = CANCELAR_CALIBRACAO_PULSOS;
+	}
+
+	protocoloIHMEnviaResposta(7);
+}
+/*==============================================================================
+ZERAR HECTARIMETRO
+==============================================================================*/
+void protocoloIHMZerarHectarimetro(uint8_t offset) {
+	hectarimetro = 0;
+	//TODO: SALVAR EEPROM
+	protocoloIHMEnviaResposta(8);
+}
+/*==============================================================================
 PROTOCOLO IHM
 ==============================================================================*/
 void protocoloIHM() {
@@ -315,6 +346,8 @@ void protocoloIHM() {
 			case 4: protocoloIHMAcionamentoCalibracao(offset); break;
 			case 5: protocoloIHMValoresCalibracao(offset); break;
 			case 6: protocoloIHMEnviaResposta(6); break;
+			case 7: protocoloIHMCalibracaoPulsos(7); break;
+			case 8: protocoloIHMZerarHectarimetro(8); break;
 		}
 
 	}

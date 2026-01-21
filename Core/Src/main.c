@@ -86,7 +86,8 @@ uint8_t
 	tipoSensorVelocidade = SENSOR_GPS,
 	velocidadeContingencia = 8,
 
-	comandoCalibracaoMaterial = CANCELAR_CALIBRACAO,
+	comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL,
+	comandoCalibracaoPulsos = CANCELAR_CALIBRACAO_PULSOS,
 	comandoComportas = PARAR_COMPORTAS,
 	comandoHaste = PARAR_HASTE,
 
@@ -99,7 +100,15 @@ char
 
 uint16_t
 	alturaHaste = 0,
-	acidez = 0,
+	acidez = 0;
+
+uint32_t
+	canTxMailbox,
+
+	setpointAdubo = 10,
+	setpointSemente = 10,
+	larguraMaquina = 100,
+	hectarimetro = 0,
 
 	calibracaoAdubo10 = 10,
 	calibracaoAdubo40 = 40,
@@ -110,14 +119,6 @@ uint16_t
 	calibracaoSemente40 = 40,
 	calibracaoSemente70 = 70,
 	calibracaoSemente100 = 100;
-
-uint32_t
-	canTxMailbox,
-
-	setpointAdubo = 10,
-	setpointSemente = 10,
-	larguraMaquina = 100,
-	hectarimetro = 0;
 
 uint8_t
 	canTxBuffer[8],

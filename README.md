@@ -99,6 +99,6 @@ CALIBRACAO_SENSOR_PULSOS: 0=CANCELAR CALIBRACAO, 1=INICIAR CALIBRAÇÃO e 2=FINA
 Resposta: Ao cancelar ou iniciar apenas retorna os mesmos dados enviados para conferência. Quando enviar o comando para finalizar a calibração. O sistema enviará: $,07,PULSOS,\r\n <br>
 PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calibração. <br>
 <br>
-Comando 8: Zerar o Hectarímetro: $,09,\r\n <br>
+Comando 8: Zerar o Hectarímetro: $,08,\r\n <br>
 Resposta: Envia o mesmos dados. Confirmando a operação <br>
 <br>
