@@ -48,6 +48,7 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			break;
 
 		case 2:
+		case 3:
 			sprintfIHM(setpointAdubo, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(setpointSemente, 0);
@@ -65,6 +66,10 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			sprintfIHM(tipoSensorVelocidade, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(velocidadeContingencia, 0);
+			break;
+
+		case 4:
+			sprintfIHM(comandoCalibracaoMaterial, 0);
 			break;
 
 		default: return;
@@ -176,6 +181,18 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	protocoloIHMEnviaResposta(2);
 }
 /*==============================================================================
+ACIONAMENTO CALIBRAÇÃO
+==============================================================================*/
+void protocoloIHMCalibracao(uint8_t offset) {
+	comandoCalibracaoMaterial = charToByte(bufferIHM[offset + 5]);
+
+	if(comandoCalibracaoMaterial >= ERRO_COMANDO_CALIBRACAO) {
+		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO;
+	}
+
+	protocoloIHMEnviaResposta(4);
+}
+/*==============================================================================
 PROTOCOLO IHM
 ==============================================================================*/
 void protocoloIHM() {
@@ -192,6 +209,8 @@ void protocoloIHM() {
 		switch(comando) {
 			case 1: protocoloIHMAtualizacaoDados(offset); break;
 			case 2: protocoloIHMConfiguracoes(offset); break;
+			case 3: protocoloIHMEnviaResposta(3); break;
+			case 4: protocoloIHMCalibracao(offset); break;
 		}
 
 	}

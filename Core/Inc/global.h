@@ -47,6 +47,21 @@ enum TIPO_SENSOR_VELOCIDADE {
 	ERRO_TIPO_SENSOR_VELOCIDADE
 };
 
+enum COMANDO_CALIBRACAO_MATERIAL {
+	CANCELAR_CALIBRACAO,
+	ACIONA_ADUBO_10,
+	ACIONA_ADUBO_40,
+	ACIONA_ADUBO_70,
+	ACIONA_ADUBO_100,
+
+	ACIONA_SEMENTE_10,
+	ACIONA_SEMENTE_40,
+	ACIONA_SEMENTE_70,
+	ACIONA_SEMENTE_100,
+
+	ERRO_COMANDO_CALIBRACAO
+};
+
 typedef struct {
 	uint32_t data;
 	uint8_t offset;
@@ -87,6 +102,7 @@ extern uint8_t
 	tipoSensorVelocidade,
 	velocidadeContingencia,
 
+	comandoCalibracaoMaterial,
 	comandoComportas,
 	comandoHaste,
 

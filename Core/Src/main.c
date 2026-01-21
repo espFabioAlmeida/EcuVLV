@@ -86,6 +86,7 @@ uint8_t
 	tipoSensorVelocidade = SENSOR_GPS,
 	velocidadeContingencia = 8,
 
+	comandoCalibracaoMaterial = CANCELAR_CALIBRACAO,
 	comandoComportas = PARAR_COMPORTAS,
 	comandoHaste = PARAR_HASTE,
 
