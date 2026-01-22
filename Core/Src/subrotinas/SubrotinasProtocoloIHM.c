@@ -46,6 +46,8 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(comandoHaste, 0);
 			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(flagSensorLevante, 0);
+			strcat(bufferEnviaIHM, ",");
 			break;
 
 		case 2:

@@ -71,6 +71,7 @@ uint8_t
 	flagPacoteIHM = false,
 	flagLedCOM = false,
 	flagLedIHM = false,
+	flagSensorLevante = false,
 
 	flagAcionamentoS1 = true,
 	flagAcionamentoS2 = true,

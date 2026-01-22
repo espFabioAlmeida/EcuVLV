@@ -57,7 +57,7 @@ OPERACAO: 0=SEM OPERAÇÃO, +1 VOLLVERINI ATIVADO, +2 ADUBO ATIVADO e +4 SEMENTE
 S1,S2,S3,4: 0=DESLIGADO e 1=LIGADO <br>
 COMPORTAS: 0=PARADO, 1=FECHAR e 2=ABRIR <br>
 HASTE: 0=PARADO, 1=SUBIR e 2=DESCER Obs: A haste só opera manualmente com o sensor de levante desligado<br>
-Resposta: $,01,SP_ADUBO,SP_SEMENTE,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,\r\n <br>
+Resposta: $,01,SP_ADUBO,SP_SEMENTE,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,\r\n <br>
 SP_ADUBO: Setpoint Adubo em kg/ha <br>
 SP_SEMENTE: Setpoint Sementes em kg/ha <br>
 VELOCIDADE: Velocidade da máquina em km/h <br>
@@ -68,6 +68,7 @@ OPERACAO: Feedback do valor recebido <br>
 S1,S2,S3,S4: Feedback do valor recebido <br>
 COMPORTAS: Feedback do valor recebido <br>
 HASTE: Feedback do valor recebido <br>
+SENSOR_LEVANTE: 0=standby e 1=operando <br>
 <br>
 Comando 2: Configurações: $,02,SP_ADUBO,SP_SEMENTE,LARGURA_MAQUINA,+OFFSET_VELOCIDADE,TIPO_SENSOR,VELOCIDADE_CONTINGENCIA,\r\n <br>
 SP_ADUBO: Setpoint Adubo em kg/ha. Entre 0 e 9999<br>

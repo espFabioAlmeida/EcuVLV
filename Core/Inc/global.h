@@ -96,6 +96,7 @@ extern uint8_t
 	flagPacoteIHM,
 	flagLedCOM,
 	flagLedIHM,
+	flagSensorLevante,
 
 	flagAcionamentoS1,
 	flagAcionamentoS2,
