@@ -51,6 +51,7 @@ RTC_HandleTypeDef hrtc;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart8;
@@ -71,7 +72,11 @@ uint8_t
 	flagPacoteIHM = false,
 	flagLedCOM = false,
 	flagLedIHM = false,
+
+	flagSalvaHectarimetro = false,
 	flagSensorLevante = false,
+	flagOperacao = false,
+	flagCalibracaoPulsosPor100m = false,
 
 	flagAcionamentoS1 = true,
 	flagAcionamentoS2 = true,
@@ -101,7 +106,10 @@ char
 
 uint16_t
 	alturaHaste = 0,
-	acidez = 0;
+	acidez = 0,
+
+	pulsosPor100m = 100,
+	contadorPulsosPor100m = 0;
 
 uint32_t
 	canTxMailbox,
@@ -110,6 +118,7 @@ uint32_t
 	setpointSemente = 10,
 	larguraMaquina = 100,
 	hectarimetro = 0,
+	hodometroMetros = 0,
 
 	calibracaoAdubo10 = 10,
 	calibracaoAdubo40 = 40,
@@ -145,6 +154,7 @@ static void MX_TIM3_Init(void);
 static void MX_UART7_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_UART8_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -154,6 +164,10 @@ static void MX_UART8_Init(void);
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if(htim == &htim3) {
 		schedulerEngine();
+	}
+
+	if(htim == &htim6) {
+		leituraSensorVelocidade();
 	}
 }
 
@@ -242,6 +256,7 @@ int main(void)
   MX_UART7_Init();
   MX_USART3_UART_Init();
   MX_UART8_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan1);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
@@ -614,6 +629,44 @@ static void MX_TIM3_Init(void)
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 9000-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 10-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
 
 }
 

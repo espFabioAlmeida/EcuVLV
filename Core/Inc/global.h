@@ -96,7 +96,11 @@ extern uint8_t
 	flagPacoteIHM,
 	flagLedCOM,
 	flagLedIHM,
+
+	flagSalvaHectarimetro,
 	flagSensorLevante,
+	flagOperacao,
+	flagCalibracaoPulsosPor100m,
 
 	flagAcionamentoS1,
 	flagAcionamentoS2,
@@ -126,7 +130,10 @@ extern char
 
 extern uint16_t
 	alturaHaste,
-	acidez;
+	acidez,
+
+	pulsosPor100m,
+	contadorPulsosPor100m;
 
 extern uint32_t
 	canTxMailbox,
@@ -135,6 +142,7 @@ extern uint32_t
 	setpointSemente,
 	larguraMaquina,
 	hectarimetro,
+	hodometroMetros,
 
 	calibracaoAdubo10,
 	calibracaoAdubo40,
