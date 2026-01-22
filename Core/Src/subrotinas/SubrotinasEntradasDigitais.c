@@ -116,7 +116,38 @@ LEITURA ENTRADAS DIGITAIS
 ==============================================================================*/
 void leituraEntradasDigitais() {
 
+	if(flagSensorLevante) {
+		if(debounceInverso(IN2_GPIO_Port, IN2_Pin)) {
+			flagSensorLevante = false;
+		}
+	}
+	else {
+		if(debounce(IN2_GPIO_Port, IN2_Pin)) {
+			flagSensorLevante = true;
+		}
+	}
 
+	if(flagHomeHaste) {
+		if(debounceInverso(IN3_GPIO_Port, IN3_Pin)) {
+			flagHomeHaste = false;
+		}
+	}
+	else {
+		if(debounce(IN3_GPIO_Port, IN3_Pin)) {
+			flagHomeHaste = true;
+		}
+	}
+
+	if(flagFimCursoHaste) {
+		if(debounceInverso(IN4_GPIO_Port, IN4_Pin)) {
+			flagFimCursoHaste = false;
+		}
+	}
+	else {
+		if(debounce(IN4_GPIO_Port, IN4_Pin)) {
+			flagFimCursoHaste = true;
+		}
+	}
 }
 /*=============================================================================
 FIM DO ARQUIVO

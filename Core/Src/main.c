@@ -78,6 +78,9 @@ uint8_t
 	flagOperacao = false,
 	flagCalibracaoPulsosPor100m = false,
 
+	flagHomeHaste = false,
+	flagFimCursoHaste = false,
+
 	flagAcionamentoS1 = true,
 	flagAcionamentoS2 = true,
 	flagAcionamentoS3 = true,
@@ -277,7 +280,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+	  leituraEntradasDigitais();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

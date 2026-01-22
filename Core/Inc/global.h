@@ -102,6 +102,9 @@ extern uint8_t
 	flagOperacao,
 	flagCalibracaoPulsosPor100m,
 
+	flagHomeHaste,
+	flagFimCursoHaste,
+
 	flagAcionamentoS1,
 	flagAcionamentoS2,
 	flagAcionamentoS3,
