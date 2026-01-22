@@ -280,6 +280,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  protocoloIHM();
 	  leituraEntradasDigitais();
     /* USER CODE END WHILE */
 
