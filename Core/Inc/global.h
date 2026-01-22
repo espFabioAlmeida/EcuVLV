@@ -146,6 +146,7 @@ extern uint32_t
 	larguraMaquina,
 	hectarimetro,
 	hodometroMetros,
+	distanciaParaUmHectare,
 
 	calibracaoAdubo10,
 	calibracaoAdubo40,

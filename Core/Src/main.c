@@ -122,6 +122,7 @@ uint32_t
 	larguraMaquina = 100,
 	hectarimetro = 0,
 	hodometroMetros = 0,
+	distanciaParaUmHectare = 10,
 
 	calibracaoAdubo10 = 10,
 	calibracaoAdubo40 = 40,
@@ -267,9 +268,11 @@ int main(void)
 
   HAL_TIM_Base_Start(&htim2); //Timer do delay us
   HAL_TIM_Base_Start_IT(&htim3); //Timer do Scheduller
+  HAL_TIM_Base_Start_IT(&htim6); //Timer da velocidade
 
   verificaEeprom();
   readEeprom();
+  calculaDistanciaUmHectare();
 
   HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
   HAL_UART_Receive_DMA(&huart7, &ihmDataIn, 1); //IHM

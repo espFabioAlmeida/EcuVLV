@@ -20,6 +20,8 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 
 	switch(comando) {
 		case 1:
+			calculaHectarimetro();
+
 			sprintfIHM(setpointAdubo, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(setpointSemente, 0);
@@ -210,6 +212,7 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	}
 
 	writeEepromConfiguracoes();
+	calculaDistanciaUmHectare();
 
 	protocoloIHMEnviaResposta(2);
 }
