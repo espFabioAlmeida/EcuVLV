@@ -72,6 +72,7 @@ uint8_t
 	flagPacoteIHM = false,
 	flagLedCOM = false,
 	flagLedIHM = false,
+	flagCalculaSetpoint = false,
 
 	flagSalvaHectarimetro = false,
 	flagSensorLevante = false,
@@ -112,7 +113,10 @@ uint16_t
 	acidez = 0,
 
 	pulsosPor100m = 100,
-	contadorPulsosPor100m = 0;
+	contadorPulsosPor100m = 0,
+
+	valorSaidaAdubo = 0,
+	valorSaidaSemente = 0;
 
 uint32_t
 	canTxMailbox,
@@ -132,7 +136,10 @@ uint32_t
 	calibracaoSemente10 = 10,
 	calibracaoSemente40 = 40,
 	calibracaoSemente70 = 70,
-	calibracaoSemente100 = 100;
+	calibracaoSemente100 = 100,
+
+	materialPorMetroAdubo = 0,
+	materialPorMetroSemente = 0;
 
 uint8_t
 	canTxBuffer[8],
@@ -273,6 +280,7 @@ int main(void)
   verificaEeprom();
   readEeprom();
   calculaDistanciaUmHectare();
+  calculaMaterialPorMetro();
 
   HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
   HAL_UART_Receive_DMA(&huart7, &ihmDataIn, 1); //IHM
@@ -285,6 +293,11 @@ int main(void)
   {
 	  protocoloIHM();
 	  leituraEntradasDigitais();
+
+	  if(flagCalculaSetpoint) {
+		  flagCalculaSetpoint = false;
+		  calculaSetpoint();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

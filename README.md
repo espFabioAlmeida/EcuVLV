@@ -103,3 +103,28 @@ PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calib
 Comando 8: Zerar o Hectarímetro: $,08,\r\n <br>
 Resposta: Envia o mesmos dados. Confirmando a operação <br>
 <br>
+
+# Protocolo CAN
+A ECU possui um endereço para cada tipo de pacote. <br>
+Endereço ECU Pacote 1: 0x1BB81A01 <br>
+Endereço ECU Pacote 2: 0x1BB81A02 <br>
+<br>
+Pacote 1: <br>
+BYTE 0: LSB PWM MODULO POTÊNCIA 90 <br>
+BYTE 1: MSB PWM MODULO POTÊNCIA 90 <br>
+BYTE 2: LSB PWM MODULO POTÊNCIA 91 <br>
+BYTE 3: MSB PWM MODULO POTÊNCIA 91 <br>
+BYTE 4: LSB PWM MODULO POTÊNCIA 92 <br>
+BYTE 5: MSB PWM MODULO POTÊNCIA 92 <br>
+BYTE 6: LSB PWM MODULO POTÊNCIA 93 <br>
+BYTE 7: MSB PWM MODULO POTÊNCIA 93 <br>
+<br>
+Pacote 2: <br>
+BYTE 0: LSB PWM MODULO POTÊNCIA 94 <br>
+BYTE 1: MSB PWM MODULO POTÊNCIA 94 <br>
+BYTE 2: LSB PWM MODULO POTÊNCIA 95 <br>
+BYTE 3: MSB PWM MODULO POTÊNCIA 95 <br>
+BYTE 4: LSB PWM MODULO POTÊNCIA 96 <br>
+BYTE 5: MSB PWM MODULO POTÊNCIA 96 <br>
+BYTE 6: LSB PWM MODULO POTÊNCIA 97 <br>
+BYTE 7: MSB PWM MODULO POTÊNCIA 97 <br>

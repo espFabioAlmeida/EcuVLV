@@ -213,6 +213,7 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 
 	writeEepromConfiguracoes();
 	calculaDistanciaUmHectare();
+	calculaMaterialPorMetro();
 
 	protocoloIHMEnviaResposta(2);
 }

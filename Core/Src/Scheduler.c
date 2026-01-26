@@ -52,6 +52,7 @@ TAREFAS 1s
 void tarefas1s() {
 	toggle(LED_CPU_GPIO_Port, LED_CPU_Pin);
 
+	flagCalculaSetpoint = true;
 }
 /*==============================================================================
 SCHEDULER
