@@ -29,6 +29,7 @@ enum BOOL {
 #define QUANTIDADE_SETOR_MODULOS		4
 
 #define TIMEOUT_MODULO_POTENCIA			5
+#define TIMEOUT_CALIBRACAO_MATERIAL		600
 
 enum COMANDO_COMPORTAS {
 	PARAR_COMPORTAS,
@@ -118,6 +119,8 @@ extern uint8_t
 	flagOperacaoAdubo,
 	flagOperacaoSemente,
 	flagCalibracaoPulsosPor100m,
+	flagCalibracaoAdubo,
+	flagCalibracaoSemente,
 
 	flagHomeHaste,
 	flagFimCursoHaste,
@@ -156,7 +159,9 @@ extern uint16_t
 	contadorPulsosPor100m,
 
 	valorSaidaAdubo,
-	valorSaidaSemente;
+	valorSaidaSemente,
+
+	contadorCalibracaoMaterial;
 
 extern uint32_t
 	canTxMailbox,

@@ -142,6 +142,40 @@ void calculaSetpoint() {
 		return;
 	}
 
+	if(flagCalibracaoAdubo) {
+		valorSaidaSemente = 0;
+
+		switch(comandoCalibracaoMaterial) {
+			case ACIONA_ADUBO_10: valorSaidaAdubo = ESCALA_PWM_10; break;
+			case ACIONA_ADUBO_40: valorSaidaAdubo = ESCALA_PWM_40; break;
+			case ACIONA_ADUBO_70: valorSaidaAdubo = ESCALA_PWM_70; break;
+			case ACIONA_ADUBO_100: valorSaidaAdubo = ESCALA_PWM_100; break;
+		}
+
+		if(contadorCalibracaoMaterial >= TIMEOUT_CALIBRACAO_MATERIAL) {
+			contadorCalibracaoMaterial = 0;
+			valorSaidaAdubo = 0;
+		}
+		return;
+	}
+
+	if(flagCalibracaoSemente) {
+		valorSaidaAdubo = 0;
+
+		switch(comandoCalibracaoMaterial) {
+			case ACIONA_SEMENTE_10: valorSaidaSemente = ESCALA_PWM_10; break;
+			case ACIONA_SEMENTE_40: valorSaidaSemente = ESCALA_PWM_40; break;
+			case ACIONA_SEMENTE_70: valorSaidaSemente = ESCALA_PWM_70; break;
+			case ACIONA_SEMENTE_100: valorSaidaSemente = ESCALA_PWM_100; break;
+		}
+
+		if(contadorCalibracaoMaterial >= TIMEOUT_CALIBRACAO_MATERIAL) {
+			contadorCalibracaoMaterial = 0;
+			valorSaidaSemente = 0;
+		}
+		return;
+	}
+
 	valorSaidaAdubo = 0;
 	valorSaidaSemente = 0;
 }
@@ -151,6 +185,10 @@ VERIFICA OPERACAO
 void verificaOperacao() {
 
 	if(flagSensorLevante) {
+		flagCalibracaoAdubo = false;
+		flagCalibracaoSemente = false;
+		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
+
 		if(!operacao) {
 			flagOperacao = false;
 			flagOperacaoVollverini = false;

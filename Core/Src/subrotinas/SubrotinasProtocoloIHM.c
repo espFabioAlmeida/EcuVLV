@@ -243,9 +243,17 @@ ACIONAMENTO CALIBRAÇÃO
 void protocoloIHMAcionamentoCalibracao(uint8_t offset) {
 	comandoCalibracaoMaterial = charToByte(bufferIHM[offset + 5]);
 
+	if(flagOperacao) {
+		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
+		flagCalibracaoAdubo = false;
+		flagCalibracaoSemente = false;
+	}
+
 	if(comandoCalibracaoMaterial >= ERRO_COMANDO_CALIBRACAO_MATERIAL) {
 		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
 	}
+
+	verificaCalibracaoMaterial();
 
 	protocoloIHMEnviaResposta(4);
 }

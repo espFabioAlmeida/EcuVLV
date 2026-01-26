@@ -81,6 +81,8 @@ uint8_t
 	flagOperacaoAdubo = false,
 	flagOperacaoSemente = false,
 	flagCalibracaoPulsosPor100m = false,
+	flagCalibracaoAdubo = false,
+	flagCalibracaoSemente = false,
 
 	flagHomeHaste = false,
 	flagFimCursoHaste = false,
@@ -119,7 +121,9 @@ uint16_t
 	contadorPulsosPor100m = 0,
 
 	valorSaidaAdubo = 0,
-	valorSaidaSemente = 0;
+	valorSaidaSemente = 0,
+
+	contadorCalibracaoMaterial = 0;
 
 uint32_t
 	canTxMailbox,
