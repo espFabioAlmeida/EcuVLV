@@ -84,6 +84,26 @@ BUSCAR VALOR MODULO
 ==============================================================================*/
 uint16_t  buscarValorModulo(modulo) {
 	if(flagOperacao) {
+
+		//Verifica se o setor está ligado
+		if(!flagAcionamentoS1 && setorModuloPotencia[modulo] == 1) {
+			return 0;
+		}
+
+		if(!flagAcionamentoS2 && setorModuloPotencia[modulo] == 2) {
+			return 0;
+		}
+
+		if(!flagAcionamentoS3 && setorModuloPotencia[modulo] == 3) {
+			return 0;
+		}
+
+		if(!flagAcionamentoS4 && setorModuloPotencia[modulo] == 4) {
+			return 0;
+		}
+
+
+		//Verifica qual o valor
 		switch(configuracaoModuloPotencia[modulo]) {
 			default:
 			case MODULO_DESLIGADO: return 0;
@@ -94,7 +114,7 @@ uint16_t  buscarValorModulo(modulo) {
 		}
 	}
 
-	return 0;
+	return 0; //Maquina desligada
 }
 /*==============================================================================
 CALCULO SETPOINT RPM
