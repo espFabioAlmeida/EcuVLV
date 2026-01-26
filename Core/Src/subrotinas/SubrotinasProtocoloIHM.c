@@ -50,6 +50,15 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(flagSensorLevante, 0);
 			strcat(bufferEnviaIHM, ",");
+
+			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+				if(contadorModuloOffline[i]) {
+					sprintfIHM("1,", 0);
+				}
+				else {
+					sprintfIHM("0,", 0);
+				}
+			}
 			break;
 
 		case 2:
