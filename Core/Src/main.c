@@ -143,7 +143,11 @@ uint32_t
 
 uint8_t
 	canTxBuffer[8],
-	canRxBuffer[8];
+	canRxBuffer[8],
+
+	configuracaoModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
+	setorModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
+	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS];
 
 char
 	bufferIHM[TAMANHO_BUFFER_IHM],
@@ -294,9 +298,16 @@ int main(void)
 	  protocoloIHM();
 	  leituraEntradasDigitais();
 
+	  recebePacoteCAN();
+
 	  if(flagCalculaSetpoint) {
 		  flagCalculaSetpoint = false;
 		  calculaSetpoint();
+	  }
+
+	  if(flagEnviaPacoteCAN) {
+		  flagEnviaPacoteCAN = false;
+		  enviaPacoteCAN();
 	  }
     /* USER CODE END WHILE */
 

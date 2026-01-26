@@ -80,6 +80,23 @@ uint16_t calculaSetpointPWM(uint32_t materialPorMinuto, uint8_t saida) {
 	return ESCALA_PWM_100;
 }
 /*==============================================================================
+BUSCAR VALOR MODULO
+==============================================================================*/
+uint16_t  buscarValorModulo(modulo) {
+	if(flagOperacao) {
+		switch(configuracaoModuloPotencia[modulo]) {
+			default:
+			case MODULO_DESLIGADO: return 0;
+
+			case MODULO_ADUBO: return valorSaidaAdubo;
+
+			case MODULO_SEMENTE: return valorSaidaSemente;
+		}
+	}
+
+	return 0;
+}
+/*==============================================================================
 CALCULO SETPOINT RPM
 ==============================================================================*/
 void calculaSetpoint() {

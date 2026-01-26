@@ -25,6 +25,11 @@ enum BOOL {
 #define MAXIMA_VELOCIDADE_CONTINGENCIA	20
 #define MAXIMO_VALOR_CALIBRACAO			999999
 
+#define QUANTIDADE_MAXIMA_MODULOS		8
+#define QUANTIDADE_SETOR_MODULOS		4
+
+#define TIMEOUT_MODULO_POTENCIA			5
+
 enum COMANDO_COMPORTAS {
 	PARAR_COMPORTAS,
 	FECHAR_COMPORTAS,
@@ -71,13 +76,21 @@ enum COMANDO_CALIBRACAO_PULSOS {
 	ERRO_COMANDO_CALIBRACAO_PULSOS
 };
 
+enum MODULO_POTENCIA {
+	MODULO_DESLIGADO,
+	MODULO_ADUBO,
+	MODULO_SEMENTE,
+
+	ERRO_MODULO_POTENCIA
+};
+
 typedef struct {
 	uint32_t data;
 	uint8_t offset;
 	uint8_t erro;
 } DTOBufferTypeDef;
 
-extern CAN_HandleTypeDef hcan;
+extern CAN_HandleTypeDef hcan1;
 extern I2C_HandleTypeDef hi2c1;
 extern RTC_HandleTypeDef hrtc;
 extern UART_HandleTypeDef huart7;
@@ -167,7 +180,11 @@ extern uint32_t
 
 extern uint8_t
 	canTxBuffer[8],
-	canRxBuffer[8];
+	canRxBuffer[8],
+
+	configuracaoModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
+	setorModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
+	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS];
 
 extern char
 	bufferIHM[TAMANHO_BUFFER_IHM],

@@ -9,7 +9,8 @@
 /*==============================================================================
 CONSTANTES
 ==============================================================================*/
-const uint32_t ECU_VLV_ADDRESS = 0x15165C14;
+const uint32_t ECU_VLV_ADDRESS_PACK1 = 0x1BB81A01;
+const uint32_t ECU_VLV_ADDRESS_PACK2 = 0x1BB81A02;
 /*==============================================================================
 RECEBE PACOTE CAN
 ==============================================================================*/
@@ -23,18 +24,63 @@ void recebePacoteCAN() {
 ENVIA PACOTE CAN
 ==============================================================================*/
 void enviaPacoteCAN() {
-	uint8_t dado = 0;
-	canTxHeader.ExtId = ECU_VLV_ADDRESS;
+	static uint8_t pacote = 0;
+	uint16_t dado = 0;
+
+	pacote ++;
+	if(pacote > 2) {
+		pacote = 1;
+	}
+
 	canTxHeader.RTR = CAN_RTR_DATA;
 	canTxHeader.IDE = CAN_ID_EXT;
 	canTxHeader.DLC = 8;
 	canTxHeader.TransmitGlobalTime = DISABLE;
 
-	if(HAL_CAN_AddTxMessage(&hcan, &canTxHeader, canTxBuffer, &canTxMailbox) != HAL_OK) {
+	if(pacote == 1) {
+		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK1;
+
+		dado = buscarValorModulo(0);
+		canTxBuffer[0] = make8(dado, 0);
+		canTxBuffer[1] = make8(dado, 1);
+
+		dado = buscarValorModulo(1);
+		canTxBuffer[2] = make8(dado, 0);
+		canTxBuffer[3] = make8(dado, 1);
+
+		dado = buscarValorModulo(2);
+		canTxBuffer[4] = make8(dado, 0);
+		canTxBuffer[5] = make8(dado, 1);
+
+		dado = buscarValorModulo(3);
+		canTxBuffer[6] = make8(dado, 0);
+		canTxBuffer[7] = make8(dado, 1);
+
+	} else if(pacote == 2) {
+		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK2;
+
+		dado = buscarValorModulo(4);
+		canTxBuffer[0] = make8(dado, 0);
+		canTxBuffer[1] = make8(dado, 1);
+
+		dado = buscarValorModulo(5);
+		canTxBuffer[2] = make8(dado, 0);
+		canTxBuffer[3] = make8(dado, 1);
+
+		dado = buscarValorModulo(6);
+		canTxBuffer[4] = make8(dado, 0);
+		canTxBuffer[5] = make8(dado, 1);
+
+		dado = buscarValorModulo(7);
+		canTxBuffer[6] = make8(dado, 0);
+		canTxBuffer[7] = make8(dado, 1);
+	}
+
+	if(HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, canTxBuffer, &canTxMailbox) != HAL_OK) {
 	    Error_Handler();
 	}
 
-	while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan) != 3) {
+	while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
 		//Aguarda fim da transmissão
 	}
 }

@@ -107,6 +107,17 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 		case 8:
 			break;
 
+		case 9:
+			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+				sprintfIHM(configuracaoModuloPotencia[i], 0);
+				strcat(bufferEnviaIHM, ",");
+			}
+			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+				sprintfIHM(setorModuloPotencia[i], 0);
+				strcat(bufferEnviaIHM, ",");
+			}
+			break;
+
 		default: return;
 	}
 
@@ -332,6 +343,27 @@ void protocoloIHMZerarHectarimetro(uint8_t offset) {
 	protocoloIHMEnviaResposta(8);
 }
 /*==============================================================================
+CONFIGURAÇÃO MÓDULO POTENCIA
+==============================================================================*/
+void protocoloIHMConfiguracaoModuloPotencia(uint8_t offset) {
+
+	for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+		configuracaoModuloPotencia[i] = charToByte(bufferIHM[offset + 5 + i *2]);
+		setorModuloPotencia[i] = charToByte(bufferIHM[offset + 21 + i * 2]);
+
+		//Validação
+		if(configuracaoModuloPotencia[i] >= ERRO_MODULO_POTENCIA) {
+			configuracaoModuloPotencia[i] = MODULO_DESLIGADO;
+		}
+		if(setorModuloPotencia[i] > QUANTIDADE_SETOR_MODULOS) {
+			setorModuloPotencia[i] = 1;
+		}
+	}
+
+	writeEepromConfiguracaoModulos();
+	protocoloIHMEnviaResposta(9);
+}
+/*==============================================================================
 PROTOCOLO IHM
 ==============================================================================*/
 void protocoloIHM() {
@@ -343,7 +375,7 @@ void protocoloIHM() {
 	offset = indexOf(bufferIHM, "$,");
 
 	if(offset >= 0) {
-		uint8_t comando = charToByte(bufferIHM[offset + 2]) * 10 + charToByte(bufferEnviaIHM[offset + 3]);
+		uint8_t comando = charToByte(bufferIHM[offset + 2]) * 10 + charToByte(bufferIHM[offset + 3]);
 
 		switch(comando) {
 			case 1: protocoloIHMAtualizacaoDados(offset); break;
@@ -352,8 +384,9 @@ void protocoloIHM() {
 			case 4: protocoloIHMAcionamentoCalibracao(offset); break;
 			case 5: protocoloIHMValoresCalibracao(offset); break;
 			case 6: protocoloIHMEnviaResposta(6); break;
-			case 7: protocoloIHMCalibracaoPulsos(7); break;
-			case 8: protocoloIHMZerarHectarimetro(8); break;
+			case 7: protocoloIHMCalibracaoPulsos(offset); break;
+			case 8: protocoloIHMZerarHectarimetro(offset); break;
+			case 9: protocoloIHMConfiguracaoModuloPotencia(offset); break;
 		}
 
 	}

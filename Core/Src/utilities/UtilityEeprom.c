@@ -204,6 +204,15 @@ void writeEepromHectarimetro() {
 	writeExternalEeprom(0, 48, make8(hectarimetro, 3));
 }
 /*==============================================================================
+WRITE EEPROM CONFIGURACAO MODULOS
+==============================================================================*/
+void writeEepromConfiguracaoModulos() {
+	for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+		writeExternalEeprom(0, 49 + i, configuracaoModuloPotencia[i]);
+		writeExternalEeprom(0, 57 + i, setorModuloPotencia[i]);
+	}
+}
+/*==============================================================================
 WRITE ALL EEPROM
 ==============================================================================*/
 void writeAllEeprom() {
@@ -235,6 +244,11 @@ void readEeprom() {
 		calibracaoSemente100 = make32(readExternalEeprom(0, 41), readExternalEeprom(0, 42), readExternalEeprom(0, 43), readExternalEeprom(0, 44));
 
 		hectarimetro = make32(readExternalEeprom(0, 45), readExternalEeprom(0, 46), readExternalEeprom(0, 47), readExternalEeprom(0, 48));
+
+		for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+			configuracaoModuloPotencia[i] = readExternalEeprom(0, 49 + i);
+			setorModuloPotencia[i] = readExternalEeprom(0, 57 + i);
+		}
 	}
 }
 /*==============================================================================

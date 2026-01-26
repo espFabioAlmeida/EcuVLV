@@ -28,6 +28,7 @@ void tarefas10ms() {
 TAREFAS 100ms
 ==============================================================================*/
 void tarefas100ms() {
+	static uint8_t conta500ms = 0;
 	reiniciaWatchDog();
 
 	if(flagLedCOM) {
@@ -44,6 +45,13 @@ void tarefas100ms() {
 	}
 	else {
 		on(LED_IHM_GPIO_Port, LED_IHM_Pin);
+	}
+
+	conta500ms ++;
+	if(conta500ms >= 5) {
+		conta500ms = 0;
+
+		flagEnviaPacoteCAN = true;
 	}
 }
 /*==============================================================================

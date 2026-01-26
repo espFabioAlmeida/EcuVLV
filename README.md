@@ -26,7 +26,7 @@ Sensor de acidez de Solo <br>
 
 
 # Escopo
-O sistema deve controlar a aplicação de materia, conforme programado. <br>
+O sistema deve controlar a aplicação de material, conforme programado. <br>
 O sistema deve controlar 2 materiais de forma destinta. Nome padrão é Adubo e Sementes <br>
 O setpoint é em kg/ha <br>
 O sistema deve monitorar a velocidade da máquina com o objetivo de adequar a aplicação do produto, visando manter o setpoint informado. <br>
@@ -102,6 +102,11 @@ PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calib
 <br>
 Comando 8: Zerar o Hectarímetro: $,08,\r\n <br>
 Resposta: Envia o mesmos dados. Confirmando a operação <br>
+<br>
+Comando 9: Configurar Módulos: $,09,CONFIG_MODULO1,CONFIG_MODULO2,CONFIG_MODULO3,CONFIG_MODULO4,CONFIG_MODULO5,CONFIG_MODULO6,CONFIG_MODULO7,CONFIG_MODULO8,SETOR_MODULO1,SETOR_MODULO2,SETOR_MODULO3,SETOR_MODULO4,SETOR_MODULO5,SETOR_MODULO6,SETOR_MODULO7,SETOR_MODULO8,\r\n <br>
+CONFIG_MODULO1 ~ CONFIG_MODULO8: 0=DESLIGADO, 1=ADUBO e 2=SEMENTE <br>
+SETOR_MODULO1 ~ SETOR_MODULO8: ENTRE 1 e 4, SETOR DO MÓDULO <br>
+Resposta: Envia os mesmos dados. Confirmando a operação <br>
 <br>
 
 # Protocolo CAN
