@@ -137,6 +137,32 @@ void calculaSetpoint() {
 	valorSaidaAdubo = 0;
 	valorSaidaSemente = 0;
 }
+/*==============================================================================
+VERIFICA OPERACAO
+==============================================================================*/
+void verificaOperacao() {
+
+	if(flagSensorLevante) {
+		if(!operacao) {
+			flagOperacao = false;
+			flagOperacaoVollverini = false;
+			flagOperacaoAdubo = false;
+			flagOperacaoSemente = false;
+			return;
+		}
+
+		flagOperacao = true;
+		flagOperacaoVollverini = bitRead(operacao, 0);
+		flagOperacaoAdubo = bitRead(operacao, 1);
+		flagOperacaoSemente = bitRead(operacao, 2);
+		return;
+	}
+
+	flagOperacao = false;
+	flagOperacaoVollverini = false;
+	flagOperacaoAdubo = false;
+	flagOperacaoSemente = false;
+}
 /*=============================================================================
 FIM DO ARQUIVO
 ==============================================================================*/

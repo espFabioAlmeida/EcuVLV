@@ -114,6 +114,9 @@ extern uint8_t
 	flagSalvaHectarimetro,
 	flagSensorLevante,
 	flagOperacao,
+	flagOperacaoVollverini,
+	flagOperacaoAdubo,
+	flagOperacaoSemente,
 	flagCalibracaoPulsosPor100m,
 
 	flagHomeHaste,

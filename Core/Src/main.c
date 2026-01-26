@@ -77,6 +77,9 @@ uint8_t
 	flagSalvaHectarimetro = false,
 	flagSensorLevante = false,
 	flagOperacao = false,
+	flagOperacaoVollverini = false,
+	flagOperacaoAdubo = false,
+	flagOperacaoSemente = false,
 	flagCalibracaoPulsosPor100m = false,
 
 	flagHomeHaste = false,
@@ -297,6 +300,7 @@ int main(void)
   {
 	  protocoloIHM();
 	  leituraEntradasDigitais();
+	  verificaOperacao();
 
 	  recebePacoteCAN();
 
