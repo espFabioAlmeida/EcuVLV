@@ -349,6 +349,7 @@ void protocoloIHMCalibracaoPulsos(uint8_t offset) {
 		comandoCalibracaoPulsos = CANCELAR_CALIBRACAO_PULSOS;
 	}
 
+	verificaCalibracaoPulsos();
 	protocoloIHMEnviaResposta(7);
 }
 /*==============================================================================
