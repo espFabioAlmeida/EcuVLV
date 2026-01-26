@@ -108,13 +108,21 @@ uint16_t  buscarValorModulo(modulo) {
 			default:
 			case MODULO_DESLIGADO: return 0;
 
-			case MODULO_ADUBO: return valorSaidaAdubo;
+			case MODULO_ADUBO:
+				if(flagOperacaoAdubo) {
+					return valorSaidaAdubo;
+				}
+				break;
 
-			case MODULO_SEMENTE: return valorSaidaSemente;
+			case MODULO_SEMENTE:
+				if(flagOperacaoSemente) {
+					return valorSaidaSemente;
+				}
+				break;
 		}
 	}
 
-	return 0; //Maquina desligada
+	return 0;
 }
 /*==============================================================================
 CALCULO SETPOINT RPM
