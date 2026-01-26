@@ -226,6 +226,8 @@ void writeAllEeprom() {
 	writeEepromConfiguracoes();
 	writeEepromCalibracao();
 	writeEepromHectarimetro();
+	writeEepromConfiguracaoModulos();
+	writeEepromPulsosPor100m();
 }
 /*==============================================================================
 READ EEPROM
@@ -265,7 +267,32 @@ APAGA EEPROM
 ==============================================================================*/
 void apagaEeprom() {
 	if(HAL_I2C_IsDeviceReady(&hi2c1, EEPROM_ADDR_0 + 1, 10, 100)) {
+		setpointAdubo = 10;
+		setpointSemente = 10;
+		larguraMaquina = 100;
+		flagOffsetVelocidadeNegativo = false;
+		offsetVelocidade = 0;
+		tipoSensorVelocidade = SENSOR_GPS;
+		velocidadeContingencia = 8;
 
+		calibracaoAdubo10 = 10;
+		calibracaoAdubo40 = 40;
+		calibracaoAdubo70 = 70;
+		calibracaoAdubo100 = 100;
+
+		calibracaoSemente10 = 10;
+		calibracaoSemente40 = 40;
+		calibracaoSemente70 = 70;
+		calibracaoSemente100 = 100;
+
+		hectarimetro = 0;
+
+		for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+			configuracaoModuloPotencia[i] = MODULO_DESLIGADO;
+			setorModuloPotencia[i] = 1;
+		}
+
+		pulsosPor100m = 10;
 
 		writeExternalEeprom(0, 0, EEPROM_INICIALIZADA);
 		writeAllEeprom();
