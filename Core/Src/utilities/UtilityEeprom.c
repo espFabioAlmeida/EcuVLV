@@ -137,71 +137,76 @@ uint8_t readExternalEeprom(uint8_t device, uint16_t address) {
 WRITE EEPROM CONFIGURACOES
 ==============================================================================*/
 void writeEepromConfiguracoes() {
-	writeExternalEeprom(0, 1, make8(setpointAdubo, 0));
-	writeExternalEeprom(0, 2, make8(setpointAdubo, 1));
-	writeExternalEeprom(0, 3, make8(setpointSemente, 0));
-	writeExternalEeprom(0, 4, make8(setpointSemente, 1));
-	writeExternalEeprom(0, 5, make8(larguraMaquina, 0));
-	writeExternalEeprom(0, 6, make8(larguraMaquina, 1));
-	writeExternalEeprom(0, 7, make8(larguraMaquina, 2));
-	writeExternalEeprom(0, 8, make8(larguraMaquina, 3));
+	writeExternalEeprom(0, 1, make8(setpointAdubo, 1));
+	writeExternalEeprom(0, 2, make8(setpointAdubo, 0));
+	writeExternalEeprom(0, 3, make8(setpointSemente, 1));
+	writeExternalEeprom(0, 4, make8(setpointSemente, 0));
+	writeExternalEeprom(0, 5, make8(larguraMaquina, 3));
+	writeExternalEeprom(0, 6, make8(larguraMaquina, 2));
+	writeExternalEeprom(0, 7, make8(larguraMaquina, 1));
+	writeExternalEeprom(0, 8, make8(larguraMaquina, 0));
 	writeExternalEeprom(0, 9, flagOffsetVelocidadeNegativo);
 	writeExternalEeprom(0, 10, offsetVelocidade);
 	writeExternalEeprom(0, 11, tipoSensorVelocidade);
 	writeExternalEeprom(0, 12, velocidadeContingencia);
+	writeExternalEeprom(0, 68, make8(setpointHaste, 1));
+	writeExternalEeprom(0, 69, make8(setpointHaste, 0));
+	writeExternalEeprom(0, 70, make8(tamanhoHaste, 1));
+	writeExternalEeprom(0, 71, make8(tamanhoHaste, 0));
+	writeExternalEeprom(0, 72, quantidadePulsosHaste);
 }
 /*==============================================================================
 WRITE EEPROM CALIBRACAO
 ==============================================================================*/
 void writeEepromCalibracao() {
-	writeExternalEeprom(0, 13, make8(calibracaoAdubo10, 0));
-	writeExternalEeprom(0, 14, make8(calibracaoAdubo10, 1));
-	writeExternalEeprom(0, 15, make8(calibracaoAdubo10, 2));
-	writeExternalEeprom(0, 16, make8(calibracaoAdubo10, 3));
+	writeExternalEeprom(0, 13, make8(calibracaoAdubo10, 3));
+	writeExternalEeprom(0, 14, make8(calibracaoAdubo10, 2));
+	writeExternalEeprom(0, 15, make8(calibracaoAdubo10, 1));
+	writeExternalEeprom(0, 16, make8(calibracaoAdubo10, 0));
 
-	writeExternalEeprom(0, 17, make8(calibracaoAdubo40, 0));
-	writeExternalEeprom(0, 18, make8(calibracaoAdubo40, 1));
-	writeExternalEeprom(0, 19, make8(calibracaoAdubo40, 2));
-	writeExternalEeprom(0, 20, make8(calibracaoAdubo40, 3));
+	writeExternalEeprom(0, 17, make8(calibracaoAdubo40, 3));
+	writeExternalEeprom(0, 18, make8(calibracaoAdubo40, 2));
+	writeExternalEeprom(0, 19, make8(calibracaoAdubo40, 1));
+	writeExternalEeprom(0, 20, make8(calibracaoAdubo40, 0));
 
-	writeExternalEeprom(0, 21, make8(calibracaoAdubo70, 0));
-	writeExternalEeprom(0, 22, make8(calibracaoAdubo70, 1));
-	writeExternalEeprom(0, 23, make8(calibracaoAdubo70, 2));
-	writeExternalEeprom(0, 24, make8(calibracaoAdubo70, 3));
+	writeExternalEeprom(0, 21, make8(calibracaoAdubo70, 3));
+	writeExternalEeprom(0, 22, make8(calibracaoAdubo70, 2));
+	writeExternalEeprom(0, 23, make8(calibracaoAdubo70, 1));
+	writeExternalEeprom(0, 24, make8(calibracaoAdubo70, 0));
 
-	writeExternalEeprom(0, 25, make8(calibracaoAdubo100, 0));
-	writeExternalEeprom(0, 26, make8(calibracaoAdubo100, 1));
-	writeExternalEeprom(0, 27, make8(calibracaoAdubo100, 2));
-	writeExternalEeprom(0, 28, make8(calibracaoAdubo100, 3));
+	writeExternalEeprom(0, 25, make8(calibracaoAdubo100, 3));
+	writeExternalEeprom(0, 26, make8(calibracaoAdubo100, 2));
+	writeExternalEeprom(0, 27, make8(calibracaoAdubo100, 1));
+	writeExternalEeprom(0, 28, make8(calibracaoAdubo100, 0));
 
-	writeExternalEeprom(0, 29, make8(calibracaoSemente10, 0));
-	writeExternalEeprom(0, 30, make8(calibracaoSemente10, 1));
-	writeExternalEeprom(0, 31, make8(calibracaoSemente10, 2));
-	writeExternalEeprom(0, 32, make8(calibracaoSemente10, 3));
+	writeExternalEeprom(0, 29, make8(calibracaoSemente10, 3));
+	writeExternalEeprom(0, 30, make8(calibracaoSemente10, 2));
+	writeExternalEeprom(0, 31, make8(calibracaoSemente10, 1));
+	writeExternalEeprom(0, 32, make8(calibracaoSemente10, 0));
 
-	writeExternalEeprom(0, 33, make8(calibracaoSemente40, 0));
-	writeExternalEeprom(0, 34, make8(calibracaoSemente40, 1));
-	writeExternalEeprom(0, 35, make8(calibracaoSemente40, 2));
-	writeExternalEeprom(0, 36, make8(calibracaoSemente40, 3));
+	writeExternalEeprom(0, 33, make8(calibracaoSemente40, 3));
+	writeExternalEeprom(0, 34, make8(calibracaoSemente40, 2));
+	writeExternalEeprom(0, 35, make8(calibracaoSemente40, 1));
+	writeExternalEeprom(0, 36, make8(calibracaoSemente40, 0));
 
-	writeExternalEeprom(0, 37, make8(calibracaoSemente70, 0));
-	writeExternalEeprom(0, 38, make8(calibracaoSemente70, 1));
-	writeExternalEeprom(0, 39, make8(calibracaoSemente70, 2));
-	writeExternalEeprom(0, 40, make8(calibracaoSemente70, 3));
+	writeExternalEeprom(0, 37, make8(calibracaoSemente70, 3));
+	writeExternalEeprom(0, 38, make8(calibracaoSemente70, 2));
+	writeExternalEeprom(0, 39, make8(calibracaoSemente70, 1));
+	writeExternalEeprom(0, 40, make8(calibracaoSemente70, 0));
 
-	writeExternalEeprom(0, 41, make8(calibracaoSemente100, 0));
-	writeExternalEeprom(0, 42, make8(calibracaoSemente100, 1));
-	writeExternalEeprom(0, 43, make8(calibracaoSemente100, 2));
-	writeExternalEeprom(0, 44, make8(calibracaoSemente100, 3));
+	writeExternalEeprom(0, 41, make8(calibracaoSemente100, 3));
+	writeExternalEeprom(0, 42, make8(calibracaoSemente100, 2));
+	writeExternalEeprom(0, 43, make8(calibracaoSemente100, 1));
+	writeExternalEeprom(0, 44, make8(calibracaoSemente100, 0));
 }
 /*==============================================================================
 WRITE EEPROM HECTARIMETRO
 ==============================================================================*/
 void writeEepromHectarimetro() {
-	writeExternalEeprom(0, 45, make8(hodometroMetros, 0));
-	writeExternalEeprom(0, 46, make8(hodometroMetros, 1));
-	writeExternalEeprom(0, 47, make8(hodometroMetros, 2));
-	writeExternalEeprom(0, 48, make8(hodometroMetros, 3));
+	writeExternalEeprom(0, 45, make8(hodometroMetros, 3));
+	writeExternalEeprom(0, 46, make8(hodometroMetros, 2));
+	writeExternalEeprom(0, 47, make8(hodometroMetros, 1));
+	writeExternalEeprom(0, 48, make8(hodometroMetros, 0));
 }
 /*==============================================================================
 WRITE EEPROM CONFIGURACAO MODULOS
@@ -260,6 +265,9 @@ void readEeprom() {
 		}
 
 		pulsosPor100m = make16(readExternalEeprom(0, 66), readExternalEeprom(0, 67));
+		setpointHaste = make16(readExternalEeprom(0, 68), readExternalEeprom(0, 69));
+		tamanhoHaste = make16(readExternalEeprom(0, 70), readExternalEeprom(0, 71));
+		quantidadePulsosHaste = readExternalEeprom(0, 72);
 	}
 }
 /*==============================================================================

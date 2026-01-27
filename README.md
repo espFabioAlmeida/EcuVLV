@@ -57,9 +57,10 @@ OPERACAO: 0=SEM OPERAÇÃO, +1 VOLLVERINI ATIVADO, +2 ADUBO ATIVADO e +4 SEMENTE
 S1,S2,S3,4: 0=DESLIGADO e 1=LIGADO <br>
 COMPORTAS: 0=PARADO, 1=FECHAR e 2=ABRIR <br>
 HASTE: 0=PARADO, 1=SUBIR e 2=DESCER Obs: A haste só opera manualmente com o sensor de levante desligado<br>
-Resposta: $,01,SP_ADUBO,SP_SEMENTE,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,\r\n <br>
+Resposta: $,01,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,\r\n <br>
 SP_ADUBO: Setpoint Adubo em kg/ha <br>
 SP_SEMENTE: Setpoint Sementes em kg/ha <br>
+SP_VOLLVERINI: Setpoint Vollverini em cm <br>
 VELOCIDADE: Velocidade da máquina em km/h <br>
 ALTURA: Altura da haste em cm <br>
 ACIDEZ: Medição do sensor de acidez (verificar unidade) <br>
@@ -71,13 +72,16 @@ HASTE: Feedback do valor recebido <br>
 SENSOR_LEVANTE: 0=standby e 1=operando <br>
 MODULO1_ONLINE ~ MODULO8_ONLINE: 1=ONLINE, 0=OFFLINE <br>
 <br>
-Comando 2: Configurações: $,02,SP_ADUBO,SP_SEMENTE,LARGURA_MAQUINA,+OFFSET_VELOCIDADE,TIPO_SENSOR,VELOCIDADE_CONTINGENCIA,\r\n <br>
+Comando 2: Configurações: $,02,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,LARGURA_MAQUINA,+OFFSET_VELOCIDADE,TIPO_SENSOR,VELOCIDADE_CONTINGENCIA,QUNTIDADE_PULSOS_HASTE,TAMANHO_HASTE,\r\n <br>
 SP_ADUBO: Setpoint Adubo em kg/ha. Entre 0 e 9999<br>
 SP_SEMENTE: Setpoint Sementes em kg/ha. Entre 0 e 9999 <br>
+SP_VOLLVERINI: Setpoint Vollverini em cm. Entre 0 e 999 <br>
 LARGURA_MAQUINA: Largura da máquina em cm. Entre  100cm e 999999cm <br>
 OFFSET_VELOIDADE: Velocidade que será somada. Enviar '+' ou '-' antes do valor, exemplo +5. Entre -9 e +9 km/h <br>
 TIPO_SENSOR: 0=SENSOR GPS ou 1=SENSOR DE PULSOS <br>
 VELOCIDADE_CONTINGENCIA: Velocidade assumida em cada de erro de leitura de velocidade em km/h. Entre 0km/h e 20km/h <br>
+QUNTIDADE_PULSOS_HASTE: Quantidade de pulsos para até o fim de curso da haste (sem contar o pulso do sensor fim de curso). Entre 1 e 99. <br>
+TAMANHO_HASTE: O tamanho total da haste, entre HOME e FIM DE CURSO. Entre 1cm e 999cm. <br>
 Resposta: Retorna os mesmos dados enviados apenas para conferência <br>
 <br>
 Comando 3: Leitura Configurações: $,03,\r\n <br>

@@ -115,6 +115,9 @@ char
 
 uint16_t
 	alturaHaste = 0,
+	setpointHaste = 10,
+	quantidadePulsosHaste = 9,
+	tamanhoHaste = 10,
 	acidez = 0,
 
 	pulsosPor100m = 100,

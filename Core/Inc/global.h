@@ -24,6 +24,8 @@ enum BOOL {
 #define MAXIMO_OFFSET_VELOCIDADE		9
 #define MAXIMA_VELOCIDADE_CONTINGENCIA	20
 #define MAXIMO_VALOR_CALIBRACAO			999999
+#define MAXIMO_PULSOS_HASTE				99
+#define MAXIMO_TAMANHO_HASTE			999
 
 #define QUANTIDADE_MAXIMA_MODULOS		8
 #define QUANTIDADE_SETOR_MODULOS		4
@@ -153,6 +155,9 @@ extern char
 
 extern uint16_t
 	alturaHaste,
+	setpointHaste,
+	quantidadePulsosHaste,
+	tamanhoHaste,
 	acidez,
 
 	pulsosPor100m,

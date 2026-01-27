@@ -26,6 +26,8 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(setpointSemente, 0);
 			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(setpointHaste, 0);
+			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(velocidade, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(alturaHaste, 0);
@@ -67,6 +69,8 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(setpointSemente, 0);
 			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(setpointHaste, 0);
+			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(larguraMaquina, 0);
 			strcat(bufferEnviaIHM, ",");
 			if(flagOffsetVelocidadeNegativo) {
@@ -80,6 +84,10 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			sprintfIHM(tipoSensorVelocidade, 0);
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(velocidadeContingencia, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(quantidadePulsosHaste, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(tamanhoHaste, 0);
 			strcat(bufferEnviaIHM, ",");
 			break;
 
@@ -182,6 +190,12 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	if(bufferIHMDTO.erro) {
 		return;
 	}
+	setpointHaste = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
 	larguraMaquina = bufferIHMDTO.data;
 
 	bufferIHMDTO.offset ++;
@@ -210,12 +224,27 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	}
 	velocidadeContingencia = bufferIHMDTO.data;
 
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	quantidadePulsosHaste = bufferIHMDTO.data;
+
+	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	if(bufferIHMDTO.erro) {
+		return;
+	}
+	tamanhoHaste = bufferIHMDTO.data;
+
 	//Validação dos dados
 	if(setpointAdubo > MAXIMO_VALOR_SETPOINT) {
 		setpointAdubo = 0;
 	}
 	if(setpointSemente > MAXIMO_VALOR_SETPOINT) {
 		setpointSemente = 0;
+	}
+	if(setpointHaste > MAXIMO_TAMANHO_HASTE) {
+		setpointHaste = 0;
 	}
 	if(larguraMaquina > MAXIMA_LARGURA_MAQUINA ||
 			larguraMaquina < MINIMA_LARGURA_MAQUINA) {
@@ -229,6 +258,14 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	}
 	if(velocidadeContingencia > MAXIMA_VELOCIDADE_CONTINGENCIA) {
 		velocidadeContingencia = 0;
+	}
+	if(!quantidadePulsosHaste ||
+			quantidadePulsosHaste > MAXIMO_PULSOS_HASTE) {
+		quantidadePulsosHaste = 1;
+	}
+	if(!tamanhoHaste ||
+			tamanhoHaste > MAXIMO_TAMANHO_HASTE) {
+		tamanhoHaste = MAXIMO_TAMANHO_HASTE;
 	}
 
 	writeEepromConfiguracoes();
