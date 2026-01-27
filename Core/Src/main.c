@@ -317,6 +317,11 @@ int main(void)
 		  flagEnviaPacoteCAN = false;
 		  enviaPacoteCAN();
 	  }
+
+	  if(flagSalvaHectarimetro) {
+		  flagSalvaHectarimetro = false;
+		  writeEepromHectarimetro();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
