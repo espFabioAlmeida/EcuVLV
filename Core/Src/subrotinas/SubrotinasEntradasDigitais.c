@@ -112,6 +112,60 @@ void leituraSensorVelocidade() {
 	}
 }
 /*=============================================================================
+LEITURA SENSOR DE PULSOS DA HASTE
+==============================================================================*/
+void leituraSensorPulsosHaste() {
+	static int8_t ultimoSentido = SUBIR_HASTE, sensorAcionado = false;
+
+	if(flagHomeHaste) { //Em home ignora os pulsos no sensor
+		contadorPulsosHaste = 0;
+		return;
+	}
+
+	if(flagFimCursoHaste) { //Em fim de curso, ignora
+		contadorPulsosHaste = quantidadePulsosHaste + 1; //O fim de curso também é um pulso válido
+		return;
+	}
+
+
+	if(sensorAcionado) { //sensor desligado
+		if(input(IN5_GPIO_Port, IN5_Pin)) {
+			sensorAcionado = false;
+		}
+	}
+	else {
+		if(!input(IN5_GPIO_Port, IN5_Pin)) {
+			sensorAcionado = true;
+
+			if(comandoHaste == SUBIR_HASTE ||
+					comandoHaste == RETORNO_HASTE) { //Haste subindo, decrementa a contagem
+				ultimoSentido = SUBIR_HASTE;
+				if(contadorPulsosHaste) {
+					contadorPulsosHaste --;
+				}
+			}
+			else if(comandoHaste == DESCER_HASTE) { //Haste descendo, incrementa a contagem
+				if(contadorPulsosHaste < quantidadePulsosHaste) {
+					ultimoSentido = DESCER_HASTE;
+					contadorPulsosHaste ++;
+				}
+			}
+			else { //Haste com comando de parar, porém ainda pode estar em movimento
+				if(ultimoSentido == DESCER_HASTE) {
+					if(contadorPulsosHaste < quantidadePulsosHaste) {
+						contadorPulsosHaste ++;
+					}
+				}
+				else if(ultimoSentido == SUBIR_HASTE) {
+					if(contadorPulsosHaste) {
+						contadorPulsosHaste --;
+					}
+				}
+			}
+		}
+	}
+}
+/*=============================================================================
 LEITURA ENTRADAS DIGITAIS
 ==============================================================================*/
 void leituraEntradasDigitais() {

@@ -45,6 +45,7 @@ enum COMANDO_HASTE {
 	PARAR_HASTE,
 	SUBIR_HASTE,
 	DESCER_HASTE,
+	RETORNO_HASTE, //comando gerado pelo firmware
 
 	ERRO_HASTE
 };
@@ -155,8 +156,11 @@ extern char
 
 extern uint16_t
 	alturaHaste,
+	alturaZeroHaste,
 	setpointHaste,
 	quantidadePulsosHaste,
+	quantidadePulsosSetpointHaste,
+	contadorPulsosHaste,
 	tamanhoHaste,
 	acidez,
 

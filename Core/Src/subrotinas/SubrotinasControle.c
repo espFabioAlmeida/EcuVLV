@@ -183,6 +183,7 @@ void calculaSetpoint() {
 VERIFICA OPERACAO
 ==============================================================================*/
 void verificaOperacao() {
+	static uint8_t ultimoVolverini = false;
 
 	if(flagSensorLevante) {
 		flagCalibracaoAdubo = false;
@@ -191,6 +192,7 @@ void verificaOperacao() {
 
 		if(!operacao) {
 			flagOperacao = false;
+			ultimoVolverini = false;
 			flagOperacaoVollverini = false;
 			flagOperacaoAdubo = false;
 			flagOperacaoSemente = false;
@@ -201,10 +203,24 @@ void verificaOperacao() {
 		flagOperacaoVollverini = bitRead(operacao, 0);
 		flagOperacaoAdubo = bitRead(operacao, 1);
 		flagOperacaoSemente = bitRead(operacao, 2);
+
+		if(ultimoVolverini) {
+			if(!flagOperacaoVollverini) {
+				ultimoVolverini = false;
+			}
+		}
+		else {
+			if(flagOperacaoVollverini) { //Iniciando operação vollverini
+				calculaAlturaZeroHaste();
+				calculaQuantidadePulsosSetpointHaste(setpointHaste + alturaZeroHaste);
+				ultimoVolverini = true;
+			}
+		}
 		return;
 	}
 
 	flagOperacao = false;
+	ultimoVolverini = false;
 	flagOperacaoVollverini = false;
 	flagOperacaoAdubo = false;
 	flagOperacaoSemente = false;

@@ -104,7 +104,7 @@ uint8_t
 	comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL,
 	comandoCalibracaoPulsos = CANCELAR_CALIBRACAO_PULSOS,
 	comandoComportas = PARAR_COMPORTAS,
-	comandoHaste = PARAR_HASTE,
+	comandoHaste = RETORNO_HASTE,
 
 	contadorBufferIHM = 0,
 	contadorBufferSensorAcidez = 0;
@@ -115,8 +115,11 @@ char
 
 uint16_t
 	alturaHaste = 0,
+	alturaZeroHaste = 0,
 	setpointHaste = 10,
 	quantidadePulsosHaste = 9,
+	quantidadePulsosSetpointHaste = 0,
+	contadorPulsosHaste = 0,
 	tamanhoHaste = 10,
 	acidez = 0,
 
@@ -193,6 +196,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if(htim == &htim6) {
 		leituraSensorVelocidade();
+		leituraSensorPulsosHaste();
 	}
 }
 
@@ -295,6 +299,7 @@ int main(void)
   readEeprom();
   calculaDistanciaUmHectare();
   calculaMaterialPorMetro();
+  calculaQuantidadePulsosSetpointHaste(setpointHaste);
 
   HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
   HAL_UART_Receive_DMA(&huart7, &ihmDataIn, 1); //IHM
@@ -308,6 +313,7 @@ int main(void)
 	  protocoloIHM();
 	  leituraEntradasDigitais();
 	  verificaOperacao();
+	  controleHaste();
 
 	  recebePacoteCAN();
 

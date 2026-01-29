@@ -11,6 +11,7 @@ CONSTANTES
 ==============================================================================*/
 const uint32_t ECU_VLV_ADDRESS_PACK1 = 0x1BB81A01;
 const uint32_t ECU_VLV_ADDRESS_PACK2 = 0x1BB81A02;
+const uint32_t ECU_VLV_ADDRESS_PACK3 = 0x1BB81A03;
 /*==============================================================================
 RECEBE PACOTE CAN
 ==============================================================================*/
@@ -28,7 +29,7 @@ void enviaPacoteCAN() {
 	uint16_t dado = 0;
 
 	pacote ++;
-	if(pacote > 2) {
+	if(pacote > 3) {
 		pacote = 1;
 	}
 
@@ -56,7 +57,8 @@ void enviaPacoteCAN() {
 		canTxBuffer[6] = make8(dado, 0);
 		canTxBuffer[7] = make8(dado, 1);
 
-	} else if(pacote == 2) {
+	}
+	else if(pacote == 2) {
 		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK2;
 
 		dado = buscarValorModulo(4);
@@ -74,6 +76,17 @@ void enviaPacoteCAN() {
 		dado = buscarValorModulo(7);
 		canTxBuffer[6] = make8(dado, 0);
 		canTxBuffer[7] = make8(dado, 1);
+	}
+	else if(pacote == 3) {
+		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK3;
+		canTxBuffer[0] = comandoHaste;
+		canTxBuffer[1] = 0;
+		canTxBuffer[2] = 0;
+		canTxBuffer[3] = 0;
+		canTxBuffer[4] = 0;
+		canTxBuffer[5] = 0;
+		canTxBuffer[6] = 0;
+		canTxBuffer[7] = 0;
 	}
 
 	if(HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, canTxBuffer, &canTxMailbox) != HAL_OK) {

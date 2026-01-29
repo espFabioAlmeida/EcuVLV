@@ -48,7 +48,12 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(comandoComportas, 0);
 			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(comandoHaste, 0);
+			if(comandoHaste ==  RETORNO_HASTE) {
+				sprintfIHM(SUBIR_HASTE, 0);
+			}
+			else {
+				sprintfIHM(comandoHaste, 0);
+			}
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(flagSensorLevante, 0);
 			strcat(bufferEnviaIHM, ",");
@@ -153,7 +158,10 @@ void protocoloIHMAtualizacaoDados(uint8_t offset) {
 	flagAcionamentoS3 = charToBool(bufferIHM[offset + 11]);
 	flagAcionamentoS4 = charToBool(bufferIHM[offset + 13]);
 	comandoComportas = charToByte(bufferIHM[offset + 15]);
-	comandoHaste = charToByte(bufferIHM[offset + 17]);
+
+	if(!flagOperacao && comandoHaste != RETORNO_HASTE) {
+		comandoHaste = charToByte(bufferIHM[offset + 17]);
+	}
 
 	//Validação dos dados
 	if(operacao > 7) { //todas as opções ligadas
@@ -271,6 +279,7 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	writeEepromConfiguracoes();
 	calculaDistanciaUmHectare();
 	calculaMaterialPorMetro();
+	calculaQuantidadePulsosSetpointHaste(setpointHaste);
 
 	protocoloIHMEnviaResposta(2);
 }
