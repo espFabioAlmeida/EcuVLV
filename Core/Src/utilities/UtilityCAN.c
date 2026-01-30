@@ -80,7 +80,7 @@ void enviaPacoteCAN() {
 	else if(pacote == 3) {
 		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK3;
 		canTxBuffer[0] = comandoHaste;
-		canTxBuffer[1] = 0;
+		canTxBuffer[1] = comandoComportas;
 		canTxBuffer[2] = 0;
 		canTxBuffer[3] = 0;
 		canTxBuffer[4] = 0;
