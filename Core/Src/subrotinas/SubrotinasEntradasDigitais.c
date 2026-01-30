@@ -12,7 +12,8 @@ CONSTANATES DO ARQUIVO
 #define TRANSFORMA_MS_EM_KMH 36
 #define PULSOS_METRO_GPS 60
 #define VELOCIDADE_MINIMA 2
-#define ESTOURO_HODOMETRO_EM_M 14316557
+//#define ESTOURO_HODOMETRO_EM_M 14316557
+#define ESTOURO_HODOMETRO_EM_M 99999999
 /*=============================================================================
 CALCULA VELOCIDADE EM M/S
 ==============================================================================*/

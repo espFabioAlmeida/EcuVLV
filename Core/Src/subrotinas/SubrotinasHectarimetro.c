@@ -14,7 +14,7 @@ CONSTANTES DO ARQUIVO
 CALCULA HECTARIMETRO
 ==============================================================================*/
 void calculaHectarimetro() {
-	uint32_t calculaArea = larguraMaquina / 10;//remove uma casa dos cm
+	uint64_t calculaArea = larguraMaquina / 10;//remove uma casa dos cm
 	calculaArea *= hodometroMetros;
 	calculaArea /= 10; //remove uma casa decimal do hodometro metros
 	calculaArea /= 10; //transforma a largura em m
