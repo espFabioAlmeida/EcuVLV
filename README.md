@@ -118,6 +118,7 @@ Resposta: Envia os mesmos dados. Confirmando a operação <br>
 A ECU possui um endereço para cada tipo de pacote. <br>
 Endereço ECU Pacote 1: 0x1BB81A01 <br>
 Endereço ECU Pacote 2: 0x1BB81A02 <br>
+Endereço ECU Pacote 3: 0x1BB81A03 <br>
 <br>
 Pacote 1: <br>
 BYTE 0: LSB PWM MODULO POTÊNCIA 90 <br>
@@ -138,3 +139,13 @@ BYTE 4: LSB PWM MODULO POTÊNCIA 96 <br>
 BYTE 5: MSB PWM MODULO POTÊNCIA 96 <br>
 BYTE 6: LSB PWM MODULO POTÊNCIA 97 <br>
 BYTE 7: MSB PWM MODULO POTÊNCIA 97 <br>
+<br>
+Pacote 3: <br>
+BYTE 0: COMANDO HASTE - 0=PARAR, 1=SUBIR, 2=DESCER, 3=SUBIR(RETORNO POR FIRMWARE) <br>
+BYTE 1: COMANDO COMPORTAS - 0=PARAR, 1=FECHAR, 2=ABRIR <br>
+BYTE 2: Livre <br>
+BYTE 3: Livre <br>
+BYTE 4: Livre <br>
+BYTE 5: Livre <br>
+BYTE 6: Livre <br>
+BYTE 7: Livre <br>
