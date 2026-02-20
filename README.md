@@ -26,34 +26,34 @@ Sensor de acidez de Solo <br>
 
 # Pinagem Conector
 Conector A: <br>
-1. VCC 
-2. GND 
-3. GND
-4. IN 3
-5. IN 5
-6. CAN L DEVICES
-7. CAN H DEVICES
-8. CAN L ISO (standby)
-9. CAN H ISO (standby)
-10. COM D+
-11. COM FIM DE LINHA (fechar com o D-)
-12. RS485 1 FIM DE LINHA (fechar com o D+)
-13. IHM FIM DE LINHA (fechar com o D-)
-14. IHM D+
-15. VCC
-16. IN 1
-17. IN 2
-18. IN 6
-19. IN 4
-20. CAN DEVICES FIM DE LINHA (fechar com o CAN H)
-21. CAN ISO FIM DE LINHA (fechar com o CAN H)
-22. COM D-
-23. RS485 2 FIM DE LINHA (fechar com o D+)
-24. RS485 2 D-
-25. RS485 2 D+
-26. RS485 1 D-
-27. RS485 1 D+
-28. IHM D-
+1- VCC <br>
+2- GND <br>
+3- GND <br>
+4- IN 3 <br>
+5- IN 5 <br>
+6- CAN L DEVICES <br>
+7- CAN H DEVICES <br>
+8- CAN L ISO (standby) <br>
+9- CAN H ISO (standby) <br>
+10- COM D+ <br>
+11- COM FIM DE LINHA (fechar com o D-) <br>
+12- RS485 1 FIM DE LINHA (fechar com o D+) <br>
+13- IHM FIM DE LINHA (fechar com o D-) <br>
+14- IHM D+ <br>
+15- VCC <br>
+16- IN 1 <br>
+17- IN 2 <br>
+18- IN 6 <br>
+19- IN 4 <br>
+20- CAN DEVICES FIM DE LINHA (fechar com o CAN H) <br>
+21- CAN ISO FIM DE LINHA (fechar com o CAN H) <br>
+22- COM D- <br>
+23- RS485 2 FIM DE LINHA (fechar com o D+) <br>
+24- RS485 2 D- <br>
+25- RS485 2 D+ <br>
+26- RS485 1 D- <br>
+27- RS485 1 D+ <br>
+28- IHM D- <br>
 <br>
 Conector B: <br>
 Não conectado (Todo) <br>
