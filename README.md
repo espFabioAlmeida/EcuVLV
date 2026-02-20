@@ -29,8 +29,8 @@ Conector A: <br>
 1- VCC <br>
 2- GND <br>
 3- GND <br>
-4- IN 3 <br>
-5- IN 5 <br>
+4- IN 3 Home Haste<br>
+5- IN 5 Sensor de Pulsos Haste<br>
 6- CAN L DEVICES <br>
 7- CAN H DEVICES <br>
 8- CAN L ISO (standby) <br>
@@ -41,10 +41,10 @@ Conector A: <br>
 13- IHM FIM DE LINHA (fechar com o D-) <br>
 14- IHM D+ <br>
 15- VCC <br>
-16- IN 1 <br>
-17- IN 2 <br>
+16- IN 1 Sensor de Velocidade <br>
+17- IN 2 Sensor de Levante <br>
 18- IN 6 <br>
-19- IN 4 <br>
+19- IN 4 Fim de Curso Haste <br>
 20- CAN DEVICES FIM DE LINHA (fechar com o CAN H) <br>
 21- CAN ISO FIM DE LINHA (fechar com o CAN H) <br>
 22- COM D- <br>
