@@ -54,7 +54,6 @@ Conector A: <br>
 26. RS485 1 D-
 27. RS485 1 D+
 28. IHM D-
-<br>
 Conector B: <br>
 Não conectado (Todo) <br>
 
