@@ -24,6 +24,39 @@ Até 8 Módulos esteiras/válvulas <br>
 RS845 1:
 Sensor de acidez de Solo <br>
 
+# Pinagem Conector
+Conector A: <br>
+1. VCC 
+2. GND 
+3. GND
+4. IN 3
+5. IN 5
+6. CAN L DEVICES
+7. CAN H DEVICES
+8. CAN L ISO (standby)
+9. CAN H ISO (standby)
+10. COM D+
+11. COM FIM DE LINHA (fechar com o D-)
+12. RS485 1 FIM DE LINHA (fechar com o D+)
+13. IHM FIM DE LINHA (fechar com o D-)
+14. IHM D+
+15. VCC
+16. IN 1
+17. IN 2
+18. IN 6
+19. IN 4
+20. CAN DEVICES FIM DE LINHA (fechar com o CAN H)
+21. CAN ISO FIM DE LINHA (fechar com o CAN H)
+22. COM D-
+23. RS485 2 FIM DE LINHA (fechar com o D+)
+24. RS485 2 D-
+25. RS485 2 D+
+26. RS485 1 D-
+27. RS485 1 D+
+28. IHM D-
+<br>
+Conector B: <br>
+Não conectado (Todo) <br>
 
 # Escopo
 O sistema deve controlar a aplicação de material, conforme programado. <br>
