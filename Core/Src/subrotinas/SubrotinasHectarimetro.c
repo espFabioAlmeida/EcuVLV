@@ -27,7 +27,11 @@ CALCULA DISTANCIA PARA UM HECTARE
 void calculaDistanciaUmHectare() {
 	distanciaParaUmHectare = TRANSFORMA_M2_EM_HA;
 	distanciaParaUmHectare *= 100; //a largura da maquina esta em cm
-	distanciaParaUmHectare /= larguraMaquina;
+	if(larguraMaquina) {
+		distanciaParaUmHectare /= larguraMaquina;
+		return;
+	}
+	distanciaParaUmHectare = TRANSFORMA_M2_EM_HA;
 }
 /*=============================================================================
 FIM DO ARQUIVO

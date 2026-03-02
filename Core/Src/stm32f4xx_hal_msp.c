@@ -23,8 +23,6 @@
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
-extern DMA_HandleTypeDef hdma_uart7_rx;
-
 extern DMA_HandleTypeDef hdma_usart3_rx;
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,8 +110,6 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* hcan)
     /* CAN1 interrupt Init */
     HAL_NVIC_SetPriority(CAN1_RX0_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(CAN1_RX0_IRQn);
-    HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
     /* USER CODE BEGIN CAN1_MspInit 1 */
 
     /* USER CODE END CAN1_MspInit 1 */
@@ -146,7 +142,6 @@ void HAL_CAN_MspDeInit(CAN_HandleTypeDef* hcan)
 
     /* CAN1 interrupt DeInit */
     HAL_NVIC_DisableIRQ(CAN1_RX0_IRQn);
-    HAL_NVIC_DisableIRQ(CAN1_RX1_IRQn);
     /* USER CODE BEGIN CAN1_MspDeInit 1 */
 
     /* USER CODE END CAN1_MspDeInit 1 */
@@ -407,25 +402,6 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     GPIO_InitStruct.Alternate = GPIO_AF8_UART7;
     HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-    /* UART7 DMA Init */
-    /* UART7_RX Init */
-    hdma_uart7_rx.Instance = DMA1_Stream3;
-    hdma_uart7_rx.Init.Channel = DMA_CHANNEL_5;
-    hdma_uart7_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
-    hdma_uart7_rx.Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma_uart7_rx.Init.MemInc = DMA_MINC_ENABLE;
-    hdma_uart7_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    hdma_uart7_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_uart7_rx.Init.Mode = DMA_CIRCULAR;
-    hdma_uart7_rx.Init.Priority = DMA_PRIORITY_MEDIUM;
-    hdma_uart7_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-    if (HAL_DMA_Init(&hdma_uart7_rx) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-    __HAL_LINKDMA(huart,hdmarx,hdma_uart7_rx);
-
     /* UART7 interrupt Init */
     HAL_NVIC_SetPriority(UART7_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(UART7_IRQn);
@@ -527,9 +503,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     PE8     ------> UART7_TX
     */
     HAL_GPIO_DeInit(GPIOE, GPIO_PIN_7|GPIO_PIN_8);
-
-    /* UART7 DMA DeInit */
-    HAL_DMA_DeInit(huart->hdmarx);
 
     /* UART7 interrupt DeInit */
     HAL_NVIC_DisableIRQ(UART7_IRQn);

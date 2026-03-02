@@ -94,7 +94,7 @@ typedef struct {
 	uint8_t erro;
 } DTOBufferTypeDef;
 
-extern CAN_HandleTypeDef hcan1;
+//extern CAN_HandleTypeDef hcan1;
 extern I2C_HandleTypeDef hi2c1;
 extern RTC_HandleTypeDef hrtc;
 extern UART_HandleTypeDef huart7;

@@ -69,6 +69,10 @@ void Error_Handler(void);
 #define IN4_GPIO_Port GPIOB
 #define IN5_Pin GPIO_PIN_2
 #define IN5_GPIO_Port GPIOB
+#define LED_COM3_Pin GPIO_PIN_11
+#define LED_COM3_GPIO_Port GPIOD
+#define LED_COM2_Pin GPIO_PIN_12
+#define LED_COM2_GPIO_Port GPIOD
 #define LED_COM1_Pin GPIO_PIN_13
 #define LED_COM1_GPIO_Port GPIOD
 #define LED_IHM_Pin GPIO_PIN_14

@@ -23,8 +23,14 @@ void calculaMaterialPorMetro() {
 	setpointGramaPorHectareMaterial2 = setpointSemente;
 	setpointGramaPorHectareMaterial2 *= 1000;
 
-	materialPorMetroAdubo = setpointGramaPorHectareMaterial1 / distanciaParaUmHectare;
-	materialPorMetroSemente = setpointGramaPorHectareMaterial2 / distanciaParaUmHectare;
+	if(distanciaParaUmHectare) {
+		materialPorMetroAdubo = setpointGramaPorHectareMaterial1 / distanciaParaUmHectare;
+		materialPorMetroSemente = setpointGramaPorHectareMaterial2 / distanciaParaUmHectare;
+		return;
+	}
+
+	materialPorMetroAdubo = 1;
+	materialPorMetroSemente = 1;
 }
 /*==============================================================================
 VELOCIDADE EM m/min

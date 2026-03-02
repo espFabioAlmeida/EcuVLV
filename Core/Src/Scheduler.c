@@ -47,17 +47,19 @@ void tarefas100ms() {
 		on(LED_IHM_GPIO_Port, LED_IHM_Pin);
 	}
 
+	/*
 	if(contadorCalibracaoMaterial && contadorCalibracaoMaterial < TIMEOUT_CALIBRACAO_MATERIAL) {
 		contadorCalibracaoMaterial ++;
-	}
+	}*/
 
+	/*
 	conta500ms ++;
 	if(conta500ms >= 5) {
 		conta500ms = 0;
 
 		flagEnviaPacoteCAN = true;
 		flagCalculaSetpoint = true;
-	}
+	}*/
 }
 /*==============================================================================
 TAREFAS 1s
@@ -65,11 +67,12 @@ TAREFAS 1s
 void tarefas1s() {
 	toggle(LED_CPU_GPIO_Port, LED_CPU_Pin);
 
+	/*
 	for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 		if(contadorModuloOffline[i]) {
 			contadorModuloOffline[i] --;
 		}
-	}
+	}*/
 }
 /*==============================================================================
 SCHEDULER

@@ -60,10 +60,10 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 
 			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 				if(contadorModuloOffline[i]) {
-					sprintfIHM("1,", 0);
+					strcat(bufferEnviaIHM, "1,");
 				}
 				else {
-					sprintfIHM("0,", 0);
+					strcat(bufferEnviaIHM, "0,");
 				}
 			}
 			break;

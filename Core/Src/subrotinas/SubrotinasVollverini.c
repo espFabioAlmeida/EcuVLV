@@ -14,7 +14,14 @@ CALCULA QUANTIDADE DE PULSOS DO SETPOINT
 ==============================================================================*/
 void calculaQuantidadePulsosSetpointHaste(uint32_t valorSetpoint) {
 	valorSetpoint *= quantidadePulsosHaste;
-	valorSetpoint /= tamanhoHaste;
+
+	if(tamanhoHaste) {
+		valorSetpoint /= tamanhoHaste;
+	}
+	else {
+		valorSetpoint /= 10;
+	}
+
 	quantidadePulsosSetpointHaste = valorSetpoint;
 }
 /*=============================================================================

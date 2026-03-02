@@ -56,7 +56,6 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart8;
 UART_HandleTypeDef huart3;
-DMA_HandleTypeDef hdma_uart7_rx;
 DMA_HandleTypeDef hdma_usart3_rx;
 
 /* USER CODE BEGIN PV */
@@ -173,7 +172,6 @@ char
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
-static void MX_CAN1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_IWDG_Init(void);
 static void MX_RTC_Init(void);
@@ -183,6 +181,7 @@ static void MX_UART7_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_UART8_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_CAN1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -194,15 +193,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		schedulerEngine();
 	}
 
+	/*
 	if(htim == &htim6) {
 		leituraSensorVelocidade();
 		leituraSensorPulsosHaste();
-	}
+	}*/
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	if(huart-> Instance==UART7) { // IHM
+		if(ihmDataIn == 0x00) {
+			return;
+		}
+
 		bufferIHM[contadorBufferIHM] = ihmDataIn;
 		contadorBufferIHM ++;
 
@@ -227,6 +231,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	}
 
 }
+
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hCan) {
 	if(hCan == &hcan1) {
@@ -276,7 +281,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_CAN1_Init();
   MX_I2C1_Init();
   MX_IWDG_Init();
   MX_RTC_Init();
@@ -286,6 +290,7 @@ int main(void)
   MX_USART3_UART_Init();
   MX_UART8_Init();
   MX_TIM6_Init();
+  MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
   HAL_CAN_Start(&hcan1);
   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
@@ -301,8 +306,10 @@ int main(void)
   calculaMaterialPorMetro();
   calculaQuantidadePulsosSetpointHaste(setpointHaste);
 
-  HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
-  HAL_UART_Receive_DMA(&huart7, &ihmDataIn, 1); //IHM
+  on(LED_COM2_GPIO_Port, LED_COM2_Pin);
+  on(LED_COM3_GPIO_Port, LED_COM3_Pin);
+
+  //HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
 
   /* USER CODE END 2 */
 
@@ -334,6 +341,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  HAL_UART_Receive_IT(&huart7, &ihmDataIn, 1);
   }
   /* USER CODE END 3 */
 }
@@ -355,12 +363,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
   RCC_OscInitStruct.PLL.PLLN = 180;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
@@ -401,13 +408,6 @@ static void MX_CAN1_Init(void)
 {
 
   /* USER CODE BEGIN CAN1_Init 0 */
-	//calculo da configuração de velocidade
-	//http://www.bittiming.can-wiki.info/
-	//Selecionar ST e colocar a velocidade do clock (do APB1 ou do barramento correspondente a CAN)
-	//gerar tabela e pegar os calores de prescaler, seg1 e seg2
-	CAN_FilterTypeDef  sFilterConfig; //Inserido
-
-	//hcan.Init.AutoRetransmission = ENABLE; --> Deve estar em ENABLE
 
   /* USER CODE END CAN1_Init 0 */
 
@@ -415,7 +415,7 @@ static void MX_CAN1_Init(void)
 
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = 5;
+  hcan1.Init.Prescaler = 10;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_15TQ;
@@ -431,26 +431,6 @@ static void MX_CAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN1_Init 2 */
-  //Inserido abaixo
-
-  sFilterConfig.FilterBank = 0;
-  sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
-  sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
-  sFilterConfig.FilterIdHigh = 0x0000;
-  sFilterConfig.FilterIdLow = 0x0000;
-  sFilterConfig.FilterMaskIdHigh = 0x0000;
-  sFilterConfig.FilterMaskIdLow = 0x0000;
-  sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-  sFilterConfig.FilterActivation = ENABLE;
-  sFilterConfig.SlaveStartFilterBank = 14;
-
-  if(HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK) {
-	  Error_Handler();
-  }
-
-  if(HAL_CAN_Start(&hcan1) != HAL_OK) {
-	  Error_Handler();
-  }
 
   /* USER CODE END CAN1_Init 2 */
 
@@ -705,7 +685,7 @@ static void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 9000-1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 10-1;
+  htim6.Init.Period = 65535;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -835,9 +815,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-  /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
 
@@ -855,13 +832,15 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LED_COM1_Pin|LED_IHM_Pin|LED_CPU_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED_COM3_Pin|LED_COM2_Pin|LED_COM1_Pin|LED_IHM_Pin
+                          |LED_CPU_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : IN1_Pin */
   GPIO_InitStruct.Pin = IN1_Pin;
@@ -881,8 +860,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_COM1_Pin LED_IHM_Pin LED_CPU_Pin */
-  GPIO_InitStruct.Pin = LED_COM1_Pin|LED_IHM_Pin|LED_CPU_Pin;
+  /*Configure GPIO pins : LED_COM3_Pin LED_COM2_Pin LED_COM1_Pin LED_IHM_Pin
+                           LED_CPU_Pin */
+  GPIO_InitStruct.Pin = LED_COM3_Pin|LED_COM2_Pin|LED_COM1_Pin|LED_IHM_Pin
+                          |LED_CPU_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
