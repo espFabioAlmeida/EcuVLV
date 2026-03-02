@@ -453,6 +453,9 @@ void protocoloIHM() {
 			case 9: protocoloIHMConfiguracaoModuloPotencia(offset); break;
 		}
 
+		if(comando <= 9) {
+			flagLedIHM = true;
+		}
 	}
 
 	flagPacoteIHM = false;
