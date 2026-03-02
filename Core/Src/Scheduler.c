@@ -52,14 +52,12 @@ void tarefas100ms() {
 		contadorCalibracaoMaterial ++;
 	}
 
-	/*
 	conta500ms ++;
 	if(conta500ms >= 5) {
 		conta500ms = 0;
-
 		flagEnviaPacoteCAN = true;
 		flagCalculaSetpoint = true;
-	}*/
+	}
 }
 /*==============================================================================
 TAREFAS 1s

@@ -33,13 +33,13 @@ void enviaPacoteCAN() {
 		pacote = 1;
 	}
 
-	//canTxHeader.RTR = CAN_RTR_DATA;
-	//canTxHeader.IDE = CAN_ID_EXT;
-	//canTxHeader.DLC = 8;
-	//canTxHeader.TransmitGlobalTime = DISABLE;
+	canTxHeader.RTR = CAN_RTR_DATA;
+	canTxHeader.IDE = CAN_ID_EXT;
+	canTxHeader.DLC = 8;
+	canTxHeader.TransmitGlobalTime = DISABLE;
 
 	if(pacote == 1) {
-		//canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK1;
+		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK1;
 
 		dado = buscarValorModulo(0);
 		canTxBuffer[0] = make8(dado, 0);
@@ -59,7 +59,7 @@ void enviaPacoteCAN() {
 
 	}
 	else if(pacote == 2) {
-		//canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK2;
+		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK2;
 
 		dado = buscarValorModulo(4);
 		canTxBuffer[0] = make8(dado, 0);
@@ -78,7 +78,7 @@ void enviaPacoteCAN() {
 		canTxBuffer[7] = make8(dado, 1);
 	}
 	else if(pacote == 3) {
-		//canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK3;
+		canTxHeader.ExtId = ECU_VLV_ADDRESS_PACK3;
 		canTxBuffer[0] = comandoHaste;
 		canTxBuffer[1] = comandoComportas;
 		canTxBuffer[2] = 0;
@@ -89,14 +89,14 @@ void enviaPacoteCAN() {
 		canTxBuffer[7] = 0;
 	}
 
-	/*
+
 	if(HAL_CAN_AddTxMessage(&hcan1, &canTxHeader, canTxBuffer, &canTxMailbox) != HAL_OK) {
 	    Error_Handler();
 	}
 
 	while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
 		//Aguarda fim da transmissão
-	}*/
+	}
 }
 /*==============================================================================
 FIM DO ARQUIVO
