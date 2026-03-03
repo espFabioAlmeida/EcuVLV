@@ -128,6 +128,14 @@ uint16_t  buscarValorModulo(modulo) {
 		}
 	}
 
+	if(flagCalibracaoAdubo && configuracaoModuloPotencia[modulo] == MODULO_ADUBO) {
+		return valorSaidaAdubo;
+	}
+
+	if(flagCalibracaoSemente && configuracaoModuloPotencia[modulo] == MODULO_SEMENTE) {
+		return valorSaidaSemente;
+	}
+
 	return 0;
 }
 /*==============================================================================
@@ -161,6 +169,7 @@ void calculaSetpoint() {
 		if(contadorCalibracaoMaterial >= TIMEOUT_CALIBRACAO_MATERIAL) {
 			contadorCalibracaoMaterial = 0;
 			valorSaidaAdubo = 0;
+			flagCalibracaoAdubo = false;
 		}
 		return;
 	}
@@ -178,6 +187,7 @@ void calculaSetpoint() {
 		if(contadorCalibracaoMaterial >= TIMEOUT_CALIBRACAO_MATERIAL) {
 			contadorCalibracaoMaterial = 0;
 			valorSaidaSemente = 0;
+			flagCalibracaoSemente = false;
 		}
 		return;
 	}
