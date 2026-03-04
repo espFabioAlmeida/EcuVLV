@@ -13,6 +13,7 @@ CONSTANTES DO ARQUIVO
 VERIFICA CALIBRACAO MATERIAL
 ==============================================================================*/
 void verificaCalibracaoPulsos() {
+	flagEnviaValorCalibracao100m = false;
 
 	if(flagOperacao) {
 		flagCalibracaoPulsosPor100m = false;
@@ -33,10 +34,17 @@ void verificaCalibracaoPulsos() {
 			return;
 
 		case FINALIZAR_CALIBRACAO_PULSOS:
-			flagCalibracaoPulsosPor100m = false;
-			pulsosPor100m = contadorPulsosPor100m;
-			contadorPulsosPor100m = 0;
-			writeEepromPulsosPor100m();
+			if(flagCalibracaoPulsosPor100m) {
+				flagCalibracaoPulsosPor100m = false;
+				pulsosPor100m = contadorPulsosPor100m;
+				contadorPulsosPor100m = 0;
+				writeEepromPulsosPor100m();
+				flagEnviaValorCalibracao100m = true;
+			}
+			return;
+
+		case LEITURA_CALIBRACAO_PULSOS:
+			flagEnviaValorCalibracao100m = true;
 			return;
 	}
 }

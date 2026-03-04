@@ -124,6 +124,11 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 		case 7:
 			sprintfIHM(comandoCalibracaoPulsos, 0);
 			strcat(bufferEnviaIHM, ",");
+			if(flagEnviaValorCalibracao100m) {
+				sprintfIHM(pulsosPor100m, 0);
+				strcat(bufferEnviaIHM, ",");
+			}
+			flagEnviaValorCalibracao100m = false;
 			break;
 
 		case 8:

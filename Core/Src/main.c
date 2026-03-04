@@ -80,6 +80,7 @@ uint8_t
 	flagOperacaoAdubo = false,
 	flagOperacaoSemente = false,
 	flagCalibracaoPulsosPor100m = false,
+	flagEnviaValorCalibracao100m = false,
 	flagCalibracaoAdubo = false,
 	flagCalibracaoSemente = false,
 
@@ -841,14 +842,14 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOD, LED_COM3_Pin|LED_COM2_Pin|LED_COM1_Pin|LED_IHM_Pin
                           |LED_CPU_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : IN1_Pin */
-  GPIO_InitStruct.Pin = IN1_Pin;
+  /*Configure GPIO pin : IN6_Pin */
+  GPIO_InitStruct.Pin = IN6_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(IN1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(IN6_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : IN1C4_Pin IN2_Pin */
-  GPIO_InitStruct.Pin = IN1C4_Pin|IN2_Pin;
+  /*Configure GPIO pins : IN1_Pin IN2_Pin */
+  GPIO_InitStruct.Pin = IN1_Pin|IN2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);

@@ -76,6 +76,7 @@ enum COMANDO_CALIBRACAO_PULSOS {
 	CANCELAR_CALIBRACAO_PULSOS,
 	INICIAR_CALIBRACAO_PULSOS,
 	FINALIZAR_CALIBRACAO_PULSOS,
+	LEITURA_CALIBRACAO_PULSOS,
 
 	ERRO_COMANDO_CALIBRACAO_PULSOS
 };
@@ -122,6 +123,7 @@ extern uint8_t
 	flagOperacaoAdubo,
 	flagOperacaoSemente,
 	flagCalibracaoPulsosPor100m,
+	flagEnviaValorCalibracao100m,
 	flagCalibracaoAdubo,
 	flagCalibracaoSemente,
 

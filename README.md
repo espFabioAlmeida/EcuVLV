@@ -133,7 +133,7 @@ Comando 6: Leitura de dados da calibração: $,06,\r\n <br>
 Respsota: Envia os mesmos dados, na mesma ordem, do comando 5. <br>
 <br>
 Comando 7: Calibração do sensor de pulsos: $,07,CALIBRACAO_SENSOR_PULSOS,\r\n <br>
-CALIBRACAO_SENSOR_PULSOS: 0=CANCELAR CALIBRACAO, 1=INICIAR CALIBRAÇÃO e 2=FINALIZAR CALIBRAÇÃO <br>
+CALIBRACAO_SENSOR_PULSOS: 0=CANCELAR CALIBRACAO, 1=INICIAR CALIBRAÇÃO, 2=FINALIZAR CALIBRAÇÃO 3=LEITURA DO VALOR ATUAL DA CALIBRAÇÃO<br>
 É importante informar ao usuário que ao iniciar a calibração ele deve andar com a máquina 100m. <br>
 Resposta: Ao cancelar ou iniciar apenas retorna os mesmos dados enviados para conferência. Quando enviar o comando para finalizar a calibração. O sistema enviará: $,07,PULSOS,\r\n <br>
 PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calibração. <br>

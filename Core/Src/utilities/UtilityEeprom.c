@@ -221,8 +221,8 @@ void writeEepromConfiguracaoModulos() {
 WRITE EEPROM PULSOS POR 100M
 ==============================================================================*/
 void writeEepromPulsosPor100m() {
-	writeExternalEeprom(0, 66, make8(pulsosPor100m, 0));
-	writeExternalEeprom(0, 67, make8(pulsosPor100m, 1));
+	writeExternalEeprom(0, 66, make8(pulsosPor100m, 1));
+	writeExternalEeprom(0, 67, make8(pulsosPor100m, 0));
 }
 /*==============================================================================
 WRITE ALL EEPROM
