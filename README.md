@@ -146,6 +146,8 @@ CONFIG_MODULO1 ~ CONFIG_MODULO8: 0=DESLIGADO, 1=ADUBO e 2=SEMENTE <br>
 SETOR_MODULO1 ~ SETOR_MODULO8: ENTRE 1 e 4, SETOR DO MÓDULO <br>
 Resposta: Envia os mesmos dados. Confirmando a operação <br>
 <br>
+Comando 10: Leitura das configurações do Módulos: $,10,\r\n <br>
+Resposta: Envia a mesma resposta do comando de escrita <br>
 
 # Protocolo CAN
 A ECU possui um endereço para cada tipo de pacote. <br>

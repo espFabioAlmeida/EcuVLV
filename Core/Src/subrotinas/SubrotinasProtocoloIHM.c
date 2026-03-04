@@ -130,6 +130,7 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			break;
 
 		case 9:
+		case 10:
 			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 				sprintfIHM(configuracaoModuloPotencia[i], 0);
 				strcat(bufferEnviaIHM, ",");
@@ -451,6 +452,7 @@ void protocoloIHM() {
 			case 7: protocoloIHMCalibracaoPulsos(offset); break;
 			case 8: protocoloIHMZerarHectarimetro(offset); break;
 			case 9: protocoloIHMConfiguracaoModuloPotencia(offset); break;
+			case 10: protocoloIHMEnviaResposta(10); break;
 		}
 
 		if(comando <= 9) {
