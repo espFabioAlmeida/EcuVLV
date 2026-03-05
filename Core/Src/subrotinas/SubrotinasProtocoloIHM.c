@@ -21,6 +21,7 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 	switch(comando) {
 		case 1:
 			calculaHectarimetro();
+			calculaAlturaHaste();
 
 			sprintfIHM(setpointAdubo, 0);
 			strcat(bufferEnviaIHM, ",");

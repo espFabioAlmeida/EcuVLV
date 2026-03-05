@@ -13,7 +13,7 @@ CONSTANTES DO ARQUIVO
 CALCULA QUANTIDADE DE PULSOS DO SETPOINT
 ==============================================================================*/
 void calculaQuantidadePulsosSetpointHaste(uint32_t valorSetpoint) {
-	valorSetpoint *= quantidadePulsosHaste;
+	valorSetpoint *= quantidadePulsosHaste + 1;
 
 	if(tamanhoHaste) {
 		valorSetpoint /= tamanhoHaste;
@@ -30,7 +30,7 @@ CALCULA A ALTURA DO ZERO DA HASTE
 void calculaAlturaZeroHaste() {
 	uint32_t valor = contadorPulsosHaste;
 	valor *= tamanhoHaste;
-	valor /= quantidadePulsosHaste;
+	valor /= quantidadePulsosHaste + 1;
 
 	alturaZeroHaste = valor;
 }
@@ -40,7 +40,7 @@ CALCULA A ALTURA PELA QUANTIDADE DE PULSOS
 void calculaAlturaHaste() {
 	uint32_t valor = contadorPulsosHaste;
 	valor *= tamanhoHaste;
-	valor /= quantidadePulsosHaste; //valor da altura ABSOLUTA
+	valor /= quantidadePulsosHaste + 1; //valor da altura ABSOLUTA
 
 	if(valor <= alturaZeroHaste) {
 		valor = 0;
@@ -58,10 +58,10 @@ void controleHaste() {
 
 	if(flagOperacao) {
 		if(flagOperacaoVollverini) {
-			if(quantidadePulsosHaste < quantidadePulsosSetpointHaste) {
+			if(contadorPulsosHaste < quantidadePulsosSetpointHaste) {
 				comandoHaste = DESCER_HASTE;
 			}
-			else if(quantidadePulsosHaste > quantidadePulsosSetpointHaste) {
+			else if(contadorPulsosHaste > quantidadePulsosSetpointHaste) {
 				comandoHaste = SUBIR_HASTE;
 			}
 			else {
