@@ -53,6 +53,7 @@ void leituraSensorVelocidade() {
 		if(tipoSensorVelocidade == SENSOR_PULSOS) {
 			valor *= 100000; //regra de 3 com a calibração de 100m e empresta mais 4 dígitos (100m * 1000)
 			valor /= pulsosPor100m;
+			valor /= 10; //remove 1 casa decimal
 		}
 		else { //GPS
 			valor *= 1000; //empresta 4 digitos para precisão nos calculos
