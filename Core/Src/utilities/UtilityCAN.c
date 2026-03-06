@@ -28,6 +28,10 @@ void enviaPacoteCAN() {
 	static uint8_t pacote = 0;
 	uint16_t dado = 0;
 
+	if(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
+		return; //Verifica se está livre
+	}
+
 	pacote ++;
 	if(pacote > 3) {
 		pacote = 1;
@@ -94,9 +98,10 @@ void enviaPacoteCAN() {
 	    Error_Handler();
 	}
 
+	/*
 	while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 3) {
 		//Aguarda fim da transmissão
-	}
+	}*/
 }
 /*==============================================================================
 FIM DO ARQUIVO
