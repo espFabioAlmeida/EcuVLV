@@ -12,13 +12,25 @@ CONSTANTES
 const uint32_t ECU_VLV_ADDRESS_PACK1 = 0x1BB81A01;
 const uint32_t ECU_VLV_ADDRESS_PACK2 = 0x1BB81A02;
 const uint32_t ECU_VLV_ADDRESS_PACK3 = 0x1BB81A03;
+
+const uint32_t MODULO_POTENCIA_ADD0 = 0x1E30FC90;
 /*==============================================================================
 RECEBE PACOTE CAN
 ==============================================================================*/
 void recebePacoteCAN() {
+	uint32_t enderecoPadraoModuloPotencia = MODULO_POTENCIA_ADD0;
 	if(flagPacoteCAN) { //Não há dados a serem recebidos
 		flagPacoteCAN = false;
-		flagLedCOM = true;
+
+		for(uint8_t i = 0; i < 8; i ++) {
+			enderecoPadraoModuloPotencia = MODULO_POTENCIA_ADD0 + i;
+
+			if(enderecoPadraoModuloPotencia == canRxHeader.ExtId) {
+				contadorModuloOffline[i] = TIMEOUT_MODULO_POTENCIA;
+				i = 0xFE;
+				flagLedCOM = true;
+			}
+		}
 	}
 }
 /*==============================================================================
