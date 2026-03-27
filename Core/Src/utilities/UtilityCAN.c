@@ -22,10 +22,11 @@ void recebePacoteCAN() {
 	if(flagPacoteCAN) { //Não há dados a serem recebidos
 		flagPacoteCAN = false;
 
-		for(uint8_t i = 0; i < 8; i ++) {
+		for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 			enderecoPadraoModuloPotencia = MODULO_POTENCIA_ADD0 + i;
 
 			if(enderecoPadraoModuloPotencia == canRxHeader.ExtId) {
+				frequenciaModulo[i] = make16(canRxBuffer[4], canRxBuffer[3]);
 				contadorModuloOffline[i] = TIMEOUT_MODULO_POTENCIA;
 				i = 0xFE;
 				flagLedCOM = true;

@@ -162,6 +162,9 @@ uint8_t
 	setorModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
 	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS];
 
+uint16_t
+	frequenciaModulo[QUANTIDADE_MAXIMA_MODULOS];
+
 char
 	bufferIHM[TAMANHO_BUFFER_IHM],
 	bufferEnviaIHM[TAMANHO_BUFFER_IHM],

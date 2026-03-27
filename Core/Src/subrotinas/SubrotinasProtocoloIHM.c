@@ -67,6 +67,10 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 					strcat(bufferEnviaIHM, "0,");
 				}
 			}
+			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
+				sprintfIHM(frequenciaModulo[i], 0);
+				strcat(bufferEnviaIHM, ",");
+			}
 			break;
 
 		case 2:
