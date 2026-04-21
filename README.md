@@ -7,8 +7,181 @@ Alimentação +12V <br>
 6 entradas digitais <br>
 Bluetooth <br>
 RTC <br>
+# Entradas Digitais
+IN1: Velocidade - GPS ou sensor de pulsos <br>
+IN2: Sensor de Levante <br>
+IN3: Home do controle de altura da haste<br>
+IN4: Fim de curso do controle de altura da haste <br>
+IN5: Leitura de pulsos do controle de altura da haste<br>
+IN6: Livre <br>
+# Devices
+Barramento CAN: <br>
+Acelerômetro/Inclinômetro (por hora, não utiliza) <br>
+Acionamento do controle de altura da haste, placa transmissor CAN Motor V3 <br>
+Até 8 Módulos comportas <br>
+Até 8 Módulos esteiras/válvulas <br>
+<br>
+RS845 1:
+Sensor de acidez de Solo <br>
+
+# Pinagem Conector
+Conector A: <br>
+1- VCC <br>
+2- GND <br>
+3- GND <br>
+4- IN 3 Home Haste<br>
+5- IN 5 Sensor de Pulsos Haste<br>
+6- CAN L DEVICES <br>
+7- CAN H DEVICES <br>
+8- CAN L ISO (standby) <br>
+9- CAN H ISO (standby) <br>
+10- COM D+ <br>
+11- COM FIM DE LINHA (fechar com o D-) <br>
+12- RS485 1 FIM DE LINHA (fechar com o D+) <br>
+13- IHM FIM DE LINHA (fechar com o D-) <br>
+14- IHM D+ <br>
+15- VCC <br>
+16- IN 1 Sensor de Velocidade <br>
+17- IN 2 Sensor de Levante <br>
+18- IN 6 <br>
+19- IN 4 Fim de Curso Haste <br>
+20- CAN DEVICES FIM DE LINHA (fechar com o CAN H) <br>
+21- CAN ISO FIM DE LINHA (fechar com o CAN H) <br>
+22- COM D- <br>
+23- RS485 2 FIM DE LINHA (fechar com o D+) <br>
+24- RS485 2 D- <br>
+25- RS485 2 D+ <br>
+26- RS485 1 D- <br>
+27- RS485 1 D+ <br>
+28- IHM D- <br>
+<br>
+Conector B: <br>
+Não conectado (Todo) <br>
+
 # Escopo
-Comunica com os dispostivos via rede CAN. <br>
-Comunicação com o módulo esteira, módulo comporta e o inclinômetro. <br>
-Comunicação com o sensor de acidez via RS485. <br>
-Leitura do sensor de velocidade e levante, via entrada digital. <br>
+O sistema deve controlar a aplicação de material, conforme programado. <br>
+O sistema deve controlar 2 materiais de forma destinta. Nome padrão é Adubo e Sementes <br>
+O setpoint é em kg/ha <br>
+O sistema deve monitorar a velocidade da máquina com o objetivo de adequar a aplicação do produto, visando manter o setpoint informado. <br>
+O sistema deve possuir as seguintes configurações: <br>
+1. Largura da máquina (cm), para transformar o deslocamento linear em área <br>
+2. Offset de velocidade, para calibração <br>
+3. Tipo de sensor de velocidade, pulsos ou GPS <br>
+4. Velocidade de contingência, velocidade considerada em caso de falha na leitura <br>
+O sistema também deve possuir a calibração dos saídas de forma independente (adubo e setpoint). <br>
+Na calibração, o operador deve acionar a máquina em: 10%, 40%, 70% ou 100%. E informar ao sistema quantos g/min foi gerado. <br>
+O sistema também deve possuir uma calibração do sensor de velocidade (pulsos). Onde o operador deve andar com a máquina por 100m e o sistema conta quantos pulsos foram gerados nessa distância. <br>
+O sistema também deve possuir um hectarímetro. <br>
+<br>
+Os módulos de acionamento, sejam eles esteira ou válvula, serão cadastrados como adubo ou semente e também receberão uma identificação de seção, que pode ser entre 1 e 4. Essa seção agrupa os módulos que poderão serem desligados momentaneamente com a máquina operando. Lembrando que o setpoint é calculado como se todos os módulos estivessem ligados. <br>
+O operador seleciona o que está sendo acionado, entre VOLLVERINI, ADUBO e SEMENTE. Ele poderá selecionar 1, 2 ou as 3 opções juntas. <br>
+O equipamento monitora a entrada de levante, e quando acionada executa a operação desejada (caso tenha pelo menos 1). <br>
+A operação VOLLVERINI consiste na descida da haste até o valor estipulado nas configurações. <br>
+O operador deve conseguir abrir/fechar comportas, de forma totalmente manual e independente. <br>
+O sensor de acidez de solo é apenas para apresentação ao operador. <br>
+O operador pode controlar manualmente a descida da haste. <br>
+<br>
+O sistema de controle da haste deve ser calibrado com a quantidade de pulsos da régua + 1(fim de curso). <br>
+O operador deve informar o comprimento total da haste (Fundo de escala). <br>
+
+# Protocolo IHM
+Comando 1: Atualziação dos comandos e dados: $,01,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,\r\n <br>
+OPERACAO: 0=SEM OPERAÇÃO, +1 VOLLVERINI ATIVADO, +2 ADUBO ATIVADO e +4 SEMENTES ATIVADO <br>
+S1,S2,S3,4: 0=DESLIGADO e 1=LIGADO <br>
+COMPORTAS: 0=PARADO, 1=FECHAR e 2=ABRIR <br>
+HASTE: 0=PARADO, 1=SUBIR e 2=DESCER Obs: A haste só opera manualmente com o sensor de levante desligado<br>
+Resposta: $,01,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,FREQ_MODULO1,FREQ_MODULO2,FREQ_MODULO3,FREQ_MODULO4,FREQ_MODULO5,FREQ_MODULO6,FREQ_MODULO7,FREQ_MODULO8,\r\n <br>
+SP_ADUBO: Setpoint Adubo em kg/ha <br>
+SP_SEMENTE: Setpoint Sementes em kg/ha <br>
+SP_VOLLVERINI: Setpoint Vollverini em cm <br>
+VELOCIDADE: Velocidade da máquina em km/h <br>
+ALTURA: Altura da haste em cm <br>
+ACIDEZ: Medição do sensor de acidez (verificar unidade) <br>
+HECTARÍMETRO: Valor total aplicado em ha (número grande) <br>
+OPERACAO: Feedback do valor recebido <br>
+S1,S2,S3,S4: Feedback do valor recebido <br>
+COMPORTAS: Feedback do valor recebido <br>
+HASTE: Feedback do valor recebido <br>
+SENSOR_LEVANTE: 0=standby e 1=operando <br>
+MODULO1_ONLINE ~ MODULO8_ONLINE: 1=ONLINE, 0=OFFLINE <br>
+FREQ_MODULO1 ~ FREQ_MODULO2: Frequencia lida pela entrada do módulo, entre 0 e 999 <br>
+<br>
+Comando 2: Configurações: $,02,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,LARGURA_MAQUINA,+OFFSET_VELOCIDADE,TIPO_SENSOR,VELOCIDADE_CONTINGENCIA,QUNTIDADE_PULSOS_HASTE,TAMANHO_HASTE,\r\n <br>
+SP_ADUBO: Setpoint Adubo em kg/ha. Entre 0 e 9999<br>
+SP_SEMENTE: Setpoint Sementes em kg/ha. Entre 0 e 9999 <br>
+SP_VOLLVERINI: Setpoint Vollverini em cm. Entre 0 e 999 <br>
+LARGURA_MAQUINA: Largura da máquina em cm. Entre  100cm e 999999cm <br>
+OFFSET_VELOIDADE: Velocidade que será somada. Enviar '+' ou '-' antes do valor, exemplo +5. Entre -9 e +9 km/h <br>
+TIPO_SENSOR: 0=SENSOR GPS ou 1=SENSOR DE PULSOS <br>
+VELOCIDADE_CONTINGENCIA: Velocidade assumida em cada de erro de leitura de velocidade em km/h. Entre 0km/h e 20km/h <br>
+QUNTIDADE_PULSOS_HASTE: Quantidade de pulsos para até o fim de curso da haste (sem contar o pulso do sensor fim de curso). Entre 1 e 99. <br>
+TAMANHO_HASTE: O tamanho total da haste, entre HOME e FIM DE CURSO. Entre 1cm e 999cm. <br>
+Resposta: Retorna os mesmos dados enviados apenas para conferência <br>
+<br>
+Comando 3: Leitura Configurações: $,03,\r\n <br>
+Resposta: Envia os mesmos dados, na mesma ordem, do comando 2. <br>
+<br>
+Comando 4: Acionamento Calibração: $,04,COMANDO_CALIBRACAO,\r\n <br>
+COMANDO_CALIBRACAO: 0=SEM COMANDO OU CANCELAR CALIBRACAO, 1=ACIONA_10_ADUBO, 2=ACIONA_40_ADUBO, 3=ACIONA_70_ADUBO, 4=ACIONA_100_ADUBO, 5=ACIONA_10_SEMENTE, 6=ACIONA_40_SEMENTE, 7=ACIONA_70_SEMENTE e 8=ACIONA_100_SEMENTE <br>
+Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
+<br>
+Comando 5: Enviar dados da calibração: $,05,ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100,SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100,\r\n <br>
+ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100: Valores de calibração em g/min do adubo. Entre 0 e 999999g/min <br>
+SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100: Valores de calibração em g/min da semente. Entre 0 e 999999g/min <br>
+Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
+<br>
+Comando 6: Leitura de dados da calibração: $,06,\r\n <br>
+Respsota: Envia os mesmos dados, na mesma ordem, do comando 5. <br>
+<br>
+Comando 7: Calibração do sensor de pulsos: $,07,CALIBRACAO_SENSOR_PULSOS,\r\n <br>
+CALIBRACAO_SENSOR_PULSOS: 0=CANCELAR CALIBRACAO, 1=INICIAR CALIBRAÇÃO, 2=FINALIZAR CALIBRAÇÃO 3=LEITURA DO VALOR ATUAL DA CALIBRAÇÃO<br>
+É importante informar ao usuário que ao iniciar a calibração ele deve andar com a máquina 100m. <br>
+Resposta: Ao cancelar ou iniciar apenas retorna os mesmos dados enviados para conferência. Quando enviar o comando para finalizar a calibração. O sistema enviará: $,07,PULSOS,\r\n <br>
+PULSOS: 0=erro ou nenhum pulso lido. >0= Quantidade de pulsos lidos para a calibração. <br>
+<br>
+Comando 8: Zerar o Hectarímetro: $,08,\r\n <br>
+Resposta: Envia o mesmos dados. Confirmando a operação <br>
+<br>
+Comando 9: Configurar Módulos: $,09,CONFIG_MODULO1,CONFIG_MODULO2,CONFIG_MODULO3,CONFIG_MODULO4,CONFIG_MODULO5,CONFIG_MODULO6,CONFIG_MODULO7,CONFIG_MODULO8,SETOR_MODULO1,SETOR_MODULO2,SETOR_MODULO3,SETOR_MODULO4,SETOR_MODULO5,SETOR_MODULO6,SETOR_MODULO7,SETOR_MODULO8,\r\n <br>
+CONFIG_MODULO1 ~ CONFIG_MODULO8: 0=DESLIGADO, 1=ADUBO e 2=SEMENTE <br>
+SETOR_MODULO1 ~ SETOR_MODULO8: ENTRE 1 e 4, SETOR DO MÓDULO <br>
+Resposta: Envia os mesmos dados. Confirmando a operação <br>
+<br>
+Comando 10: Leitura das configurações do Módulos: $,10,\r\n <br>
+Resposta: Envia a mesma resposta do comando de escrita <br>
+
+# Protocolo CAN
+A ECU possui um endereço para cada tipo de pacote. <br>
+Endereço ECU Pacote 1: 0x1BB81A01 <br>
+Endereço ECU Pacote 2: 0x1BB81A02 <br>
+Endereço ECU Pacote 3: 0x1BB81A03 <br>
+<br>
+Pacote 1: <br>
+BYTE 0: LSB PWM MODULO POTÊNCIA 90 <br>
+BYTE 1: MSB PWM MODULO POTÊNCIA 90 <br>
+BYTE 2: LSB PWM MODULO POTÊNCIA 91 <br>
+BYTE 3: MSB PWM MODULO POTÊNCIA 91 <br>
+BYTE 4: LSB PWM MODULO POTÊNCIA 92 <br>
+BYTE 5: MSB PWM MODULO POTÊNCIA 92 <br>
+BYTE 6: LSB PWM MODULO POTÊNCIA 93 <br>
+BYTE 7: MSB PWM MODULO POTÊNCIA 93 <br>
+<br>
+Pacote 2: <br>
+BYTE 0: LSB PWM MODULO POTÊNCIA 94 <br>
+BYTE 1: MSB PWM MODULO POTÊNCIA 94 <br>
+BYTE 2: LSB PWM MODULO POTÊNCIA 95 <br>
+BYTE 3: MSB PWM MODULO POTÊNCIA 95 <br>
+BYTE 4: LSB PWM MODULO POTÊNCIA 96 <br>
+BYTE 5: MSB PWM MODULO POTÊNCIA 96 <br>
+BYTE 6: LSB PWM MODULO POTÊNCIA 97 <br>
+BYTE 7: MSB PWM MODULO POTÊNCIA 97 <br>
+<br>
+Pacote 3: <br>
+BYTE 0: COMANDO HASTE - 0=PARAR, 1=SUBIR, 2=DESCER, 3=SUBIR(RETORNO POR FIRMWARE) <br>
+BYTE 1: COMANDO COMPORTAS - 0=PARAR, 1=FECHAR, 2=ABRIR <br>
+BYTE 2: Livre <br>
+BYTE 3: Livre <br>
+BYTE 4: Livre <br>
+BYTE 5: Livre <br>
+BYTE 6: Livre <br>
+BYTE 7: Livre <br>

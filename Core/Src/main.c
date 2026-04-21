@@ -21,7 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "global.h"
+#include "string.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,22 +51,131 @@ RTC_HandleTypeDef hrtc;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart8;
 UART_HandleTypeDef huart3;
-DMA_HandleTypeDef hdma_uart7_rx;
 DMA_HandleTypeDef hdma_usart3_rx;
 
 /* USER CODE BEGIN PV */
+CAN_TxHeaderTypeDef	canTxHeader;
+CAN_RxHeaderTypeDef	canRxHeader;
 
+DTOBufferTypeDef
+	bufferIHMDTO;
+
+uint8_t
+	flagPacoteCAN = false,
+	flagEnviaPacoteCAN = false,
+	flagPacoteIHM = false,
+	flagLedCOM = false,
+	flagLedIHM = false,
+	flagCalculaSetpoint = false,
+
+	flagSalvaHectarimetro = false,
+	flagSensorLevante = false,
+	flagOperacao = false,
+	flagOperacaoVollverini = false,
+	flagOperacaoAdubo = false,
+	flagOperacaoSemente = false,
+	flagCalibracaoPulsosPor100m = false,
+	flagEnviaValorCalibracao100m = false,
+	flagCalibracaoAdubo = false,
+	flagCalibracaoSemente = false,
+
+	flagHomeHaste = false,
+	flagFimCursoHaste = false,
+
+	flagAcionamentoS1 = true,
+	flagAcionamentoS2 = true,
+	flagAcionamentoS3 = true,
+	flagAcionamentoS4 = true,
+
+	flagOffsetVelocidadeNegativo = false;
+
+uint8_t
+	operacao = 0,
+	velocidade = 0,
+	offsetVelocidade = 0,
+	tipoSensorVelocidade = SENSOR_GPS,
+	velocidadeContingencia = 8,
+
+	comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL,
+	comandoCalibracaoPulsos = CANCELAR_CALIBRACAO_PULSOS,
+	comandoComportas = PARAR_COMPORTAS,
+	comandoHaste = RETORNO_HASTE,
+
+	contadorBufferIHM = 0,
+	contadorBufferSensorAcidez = 0;
+
+char
+	ihmDataIn = 0,
+	sensorAcidezDataIn = 0;
+
+uint16_t
+	alturaHaste = 0,
+	alturaZeroHaste = 0,
+	setpointHaste = 10,
+	quantidadePulsosHaste = 9,
+	quantidadePulsosSetpointHaste = 0,
+	contadorPulsosHaste = 0,
+	tamanhoHaste = 10,
+	acidez = 0,
+
+	pulsosPor100m = 100,
+	contadorPulsosPor100m = 0,
+
+	valorSaidaAdubo = 0,
+	valorSaidaSemente = 0,
+
+	contadorCalibracaoMaterial = 0;
+
+uint32_t
+	canTxMailbox,
+
+	setpointAdubo = 10,
+	setpointSemente = 10,
+	larguraMaquina = 100,
+	hectarimetro = 0,
+	hodometroMetros = 0,
+	distanciaParaUmHectare = 10,
+
+	calibracaoAdubo10 = 10,
+	calibracaoAdubo40 = 40,
+	calibracaoAdubo70 = 70,
+	calibracaoAdubo100 = 100,
+
+	calibracaoSemente10 = 10,
+	calibracaoSemente40 = 40,
+	calibracaoSemente70 = 70,
+	calibracaoSemente100 = 100,
+
+	materialPorMetroAdubo = 0,
+	materialPorMetroSemente = 0;
+
+uint8_t
+	canTxBuffer[8],
+	canRxBuffer[8],
+
+	configuracaoModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
+	setorModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
+	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS];
+
+uint16_t
+	frequenciaModulo[QUANTIDADE_MAXIMA_MODULOS];
+
+char
+	bufferIHM[TAMANHO_BUFFER_IHM],
+	bufferEnviaIHM[TAMANHO_BUFFER_IHM],
+
+	bufferSensorAvidez[TAMANHO_BUFFER_SENSOR_ACIDEZ];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
-static void MX_CAN1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_IWDG_Init(void);
 static void MX_RTC_Init(void);
@@ -74,13 +184,74 @@ static void MX_TIM3_Init(void);
 static void MX_UART7_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_UART8_Init(void);
+static void MX_TIM6_Init(void);
+static void MX_CAN1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	if(htim == &htim3) {
+		schedulerEngine();
+	}
 
+	if(htim == &htim6) {
+		leituraSensorVelocidade();
+		leituraSensorPulsosHaste();
+	}
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+
+	if(huart-> Instance==UART7) { // IHM
+		if(ihmDataIn == 0x00) {
+			return;
+		}
+
+		bufferIHM[contadorBufferIHM] = ihmDataIn;
+		contadorBufferIHM ++;
+
+		if(contadorBufferIHM >= TAMANHO_BUFFER_IHM) {
+			apagaBufferIHM();
+		}
+
+		if(ihmDataIn == 0x0A) {
+			flagPacoteIHM = true;
+		}
+	}
+
+	if(huart-> Instance==USART3) { // Sensor de acidez
+		bufferSensorAvidez[contadorBufferSensorAcidez] = sensorAcidezDataIn;
+		contadorBufferSensorAcidez ++;
+
+		if(contadorBufferSensorAcidez >= TAMANHO_BUFFER_SENSOR_ACIDEZ) {
+			apagaBufferSensorAcidez();
+		}
+
+		//TODO: VERIFICAR A FORMA QUE INDETIFICA O FIM DOS DADOS RECEBIDOS
+	}
+
+}
+
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hCan) {
+	if(hCan == &hcan1) {
+		HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &canRxHeader, canRxBuffer);
+		flagPacoteCAN = true;
+	}
+}
+
+void delayMicro(uint32_t tempo) {
+	__HAL_TIM_SET_COUNTER(&htim2, 0);
+	while(__HAL_TIM_GET_COUNTER(&htim2) < tempo) {
+	}
+}
+
+void reiniciaWatchDog() {
+	HAL_IWDG_Refresh(&hiwdg);
+}
 /* USER CODE END 0 */
 
 /**
@@ -113,7 +284,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_CAN1_Init();
   MX_I2C1_Init();
   MX_IWDG_Init();
   MX_RTC_Init();
@@ -122,7 +292,27 @@ int main(void)
   MX_UART7_Init();
   MX_USART3_UART_Init();
   MX_UART8_Init();
+  MX_TIM6_Init();
+  MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
+  HAL_CAN_Start(&hcan1);
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
+  //Alterações no CAN INIT
+
+  HAL_TIM_Base_Start(&htim2); //Timer do delay us
+  HAL_TIM_Base_Start_IT(&htim3); //Timer do Scheduller
+  HAL_TIM_Base_Start_IT(&htim6); //Timer da velocidade
+
+  verificaEeprom();
+  readEeprom();
+  calculaDistanciaUmHectare();
+  calculaMaterialPorMetro();
+  calculaQuantidadePulsosSetpointHaste(setpointHaste);
+
+  on(LED_COM2_GPIO_Port, LED_COM2_Pin);
+  on(LED_COM3_GPIO_Port, LED_COM3_Pin);
+
+  //HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
 
   /* USER CODE END 2 */
 
@@ -130,9 +320,31 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  protocoloIHM();
+	  leituraEntradasDigitais();
+	  verificaOperacao();
+	  controleHaste();
+
+	  recebePacoteCAN();
+
+	  if(flagCalculaSetpoint) {
+		  flagCalculaSetpoint = false;
+		  calculaSetpoint();
+	  }
+
+	  if(flagEnviaPacoteCAN) {
+		  flagEnviaPacoteCAN = false;
+		  enviaPacoteCAN();
+	  }
+
+	  if(flagSalvaHectarimetro) {
+		  flagSalvaHectarimetro = false;
+		  writeEepromHectarimetro();
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  HAL_UART_Receive_IT(&huart7, &ihmDataIn, 1);
   }
   /* USER CODE END 3 */
 }
@@ -154,12 +366,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 8;
   RCC_OscInitStruct.PLL.PLLN = 180;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
@@ -200,6 +411,13 @@ static void MX_CAN1_Init(void)
 {
 
   /* USER CODE BEGIN CAN1_Init 0 */
+	//calculo da configuração de velocidade
+	//http://www.bittiming.can-wiki.info/
+	//Selecionar ST e colocar a velocidade do clock (do APB1 ou do barramento correspondente a CAN)
+	//gerar tabela e pegar os calores de prescaler, seg1 e seg2
+	CAN_FilterTypeDef  sFilterConfig; //Inserido
+
+	//hcan.Init.AutoRetransmission = ENABLE; --> Deve estar em ENABLE
 
   /* USER CODE END CAN1_Init 0 */
 
@@ -207,15 +425,15 @@ static void MX_CAN1_Init(void)
 
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
-  hcan1.Init.Prescaler = 16;
+  hcan1.Init.Prescaler = 10;
   hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_1TQ;
-  hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_15TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
   hcan1.Init.AutoBusOff = DISABLE;
   hcan1.Init.AutoWakeUp = DISABLE;
-  hcan1.Init.AutoRetransmission = DISABLE;
+  hcan1.Init.AutoRetransmission = ENABLE;
   hcan1.Init.ReceiveFifoLocked = DISABLE;
   hcan1.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
@@ -223,6 +441,26 @@ static void MX_CAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN1_Init 2 */
+  //Inserido abaixo
+
+  sFilterConfig.FilterBank = 0;
+  sFilterConfig.FilterMode = CAN_FILTERMODE_IDMASK;
+  sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
+  sFilterConfig.FilterIdHigh = 0x0000;
+  sFilterConfig.FilterIdLow = 0x0000;
+  sFilterConfig.FilterMaskIdHigh = 0x0000;
+  sFilterConfig.FilterMaskIdLow = 0x0000;
+  sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+  sFilterConfig.FilterActivation = ENABLE;
+  sFilterConfig.SlaveStartFilterBank = 14;
+
+  if(HAL_CAN_ConfigFilter(&hcan1, &sFilterConfig) != HAL_OK) {
+	  Error_Handler();
+  }
+
+  if(HAL_CAN_Start(&hcan1) != HAL_OK) {
+	  Error_Handler();
+  }
 
   /* USER CODE END CAN1_Init 2 */
 
@@ -458,6 +696,44 @@ static void MX_TIM3_Init(void)
 }
 
 /**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 9000-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 10-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
   * @brief UART7 Initialization Function
   * @param None
   * @retval None
@@ -569,9 +845,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
-  /* DMA1_Stream3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
 
@@ -589,22 +862,24 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LED_COM1_Pin|LED_IHM_Pin|LED_CPU_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, LED_COM3_Pin|LED_COM2_Pin|LED_COM1_Pin|LED_IHM_Pin
+                          |LED_CPU_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : IN1_Pin */
-  GPIO_InitStruct.Pin = IN1_Pin;
+  /*Configure GPIO pin : IN6_Pin */
+  GPIO_InitStruct.Pin = IN6_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(IN1_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(IN6_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : IN1C4_Pin IN2_Pin */
-  GPIO_InitStruct.Pin = IN1C4_Pin|IN2_Pin;
+  /*Configure GPIO pins : IN1_Pin IN2_Pin */
+  GPIO_InitStruct.Pin = IN1_Pin|IN2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -615,8 +890,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_COM1_Pin LED_IHM_Pin LED_CPU_Pin */
-  GPIO_InitStruct.Pin = LED_COM1_Pin|LED_IHM_Pin|LED_CPU_Pin;
+  /*Configure GPIO pins : LED_COM3_Pin LED_COM2_Pin LED_COM1_Pin LED_IHM_Pin
+                           LED_CPU_Pin */
+  GPIO_InitStruct.Pin = LED_COM3_Pin|LED_COM2_Pin|LED_COM1_Pin|LED_IHM_Pin
+                          |LED_CPU_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
