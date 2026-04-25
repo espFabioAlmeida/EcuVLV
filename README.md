@@ -18,8 +18,7 @@ IN6: Livre <br>
 Barramento CAN: <br>
 Acelerômetro/Inclinômetro (por hora, não utiliza) <br>
 Acionamento do controle de altura da haste, placa transmissor CAN Motor V3 <br>
-Até 8 Módulos comportas <br>
-Até 8 Módulos esteiras/válvulas <br>
+Até 8 Módulos comportas ou Módulos esteiras/válvulas, placa Módulo de Potência CAN <br>
 <br>
 RS845 1:
 Sensor de acidez de Solo <br>

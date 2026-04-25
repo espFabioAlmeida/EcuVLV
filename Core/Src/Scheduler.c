@@ -31,12 +31,12 @@ void tarefas100ms() {
 	static uint8_t conta500ms = 0;
 	reiniciaWatchDog();
 
-	if(flagLedCOM) {
-		off(LED_COM1_GPIO_Port, LED_COM1_Pin);
-		flagLedCOM = false;
+	if(flagLedCAN1) {
+		off(LED_CAN1_GPIO_Port, LED_CAN1_Pin);
+		flagLedCAN1 = false;
 	}
 	else {
-		on(LED_COM1_GPIO_Port, LED_COM1_Pin);
+		on(LED_CAN1_GPIO_Port, LED_CAN1_Pin);
 	}
 
 	if(flagLedIHM) {

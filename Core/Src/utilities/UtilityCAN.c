@@ -29,7 +29,7 @@ void recebePacoteCAN() {
 				frequenciaModulo[i] = make16(canRxBuffer[4], canRxBuffer[3]);
 				contadorModuloOffline[i] = TIMEOUT_MODULO_POTENCIA;
 				i = 0xFE;
-				flagLedCOM = true;
+				flagLedCAN1 = true;
 			}
 		}
 	}
