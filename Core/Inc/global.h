@@ -112,7 +112,7 @@ extern uint8_t
 	flagPacoteCAN,
 	flagEnviaPacoteCAN,
 	flagPacoteIHM,
-	flagLedCOM,
+	flagLedCAN1,
 	flagLedIHM,
 	flagCalculaSetpoint,
 
