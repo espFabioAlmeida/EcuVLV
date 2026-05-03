@@ -69,7 +69,7 @@ uint8_t
 	flagPacoteCAN = false,
 	flagEnviaPacoteCAN = false,
 	flagPacoteIHM = false,
-	flagLedCOM = false,
+	flagLedCAN1 = false,
 	flagLedIHM = false,
 	flagCalculaSetpoint = false,
 
@@ -309,8 +309,10 @@ int main(void)
   calculaMaterialPorMetro();
   calculaQuantidadePulsosSetpointHaste(setpointHaste);
 
+  on(LED_COM1_GPIO_Port, LED_COM1_Pin);
   on(LED_COM2_GPIO_Port, LED_COM2_Pin);
   on(LED_COM3_GPIO_Port, LED_COM3_Pin);
+  on(LED_CAN2_GPIO_Port, LED_CAN2_Pin);
 
   //HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
 
@@ -869,6 +871,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED_CAN2_Pin|LED_CAN1_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, LED_COM3_Pin|LED_COM2_Pin|LED_COM1_Pin|LED_IHM_Pin
                           |LED_CPU_Pin, GPIO_PIN_RESET);
 
@@ -888,6 +893,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = IN3_Pin|IN4_Pin|IN5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LED_CAN2_Pin LED_CAN1_Pin */
+  GPIO_InitStruct.Pin = LED_CAN2_Pin|LED_CAN1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LED_COM3_Pin LED_COM2_Pin LED_COM1_Pin LED_IHM_Pin
