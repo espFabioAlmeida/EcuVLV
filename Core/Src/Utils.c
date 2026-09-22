@@ -138,6 +138,26 @@ uint8_t charToByte(char var) {
 	return 0;
 }
 /*===========================================================================
+FUNÇÃO PARA VERIFICAR SE É UM NUMERO
+===========================================================================*/
+uint8_t isNumber(char var) {
+
+	if(var >= '0' && var <= '9') {
+		return true;
+	}
+
+	return false;
+}
+/*===========================================================================
+FUNÇÃO PARA VERIFICAR SE NÃO É UM NUMERO
+===========================================================================*/
+uint8_t isNotNumber(char var) {
+	if(isNumber(var)) {
+		return false;
+	}
+	return true;
+}
+/*===========================================================================
 FUNÇÃO PARA TRANSFORMAR UM DADO CHAR EM BOOL
 ===========================================================================*/
 uint8_t charToBool(char var) {
@@ -149,8 +169,13 @@ uint8_t charToBool(char var) {
 /*==============================================================================
 MAP (REGRA DE 3 COMPOSTA)
 ==============================================================================*/
-uint32_t map(uint32_t valor, uint32_t inMin, uint32_t inMax, uint32_t outMin, uint32_t outMax) {
-	return ((valor - inMin) * (outMax - outMin)) / (inMax - inMin) + outMin;
+int32_t map(int32_t valor, int32_t inMin, int32_t inMax, int32_t outMin, int32_t outMax) {
+	int64_t calculo = valor - inMin;
+	calculo *= (outMax - outMin);
+	calculo /= (inMax - inMin);
+	calculo += outMin;
+
+	return calculo;
 }
 /*==============================================================================
 MAKE 8

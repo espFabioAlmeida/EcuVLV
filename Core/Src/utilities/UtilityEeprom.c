@@ -158,46 +158,38 @@ void writeEepromConfiguracoes() {
 /*==============================================================================
 WRITE EEPROM CALIBRACAO
 ==============================================================================*/
-void writeEepromCalibracao() {
-	writeExternalEeprom(0, 13, make8(calibracaoAdubo10, 3));
-	writeExternalEeprom(0, 14, make8(calibracaoAdubo10, 2));
-	writeExternalEeprom(0, 15, make8(calibracaoAdubo10, 1));
-	writeExternalEeprom(0, 16, make8(calibracaoAdubo10, 0));
+void writeEepromCalibracao(uint8_t material) {
 
-	writeExternalEeprom(0, 17, make8(calibracaoAdubo40, 3));
-	writeExternalEeprom(0, 18, make8(calibracaoAdubo40, 2));
-	writeExternalEeprom(0, 19, make8(calibracaoAdubo40, 1));
-	writeExternalEeprom(0, 20, make8(calibracaoAdubo40, 0));
+	if(material == SELECIONA_TODOS || material >= ERRO_SELECAO_MATERIAL) {
+		return;
+	}
 
-	writeExternalEeprom(0, 21, make8(calibracaoAdubo70, 3));
-	writeExternalEeprom(0, 22, make8(calibracaoAdubo70, 2));
-	writeExternalEeprom(0, 23, make8(calibracaoAdubo70, 1));
-	writeExternalEeprom(0, 24, make8(calibracaoAdubo70, 0));
+	for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
 
-	writeExternalEeprom(0, 25, make8(calibracaoAdubo100, 3));
-	writeExternalEeprom(0, 26, make8(calibracaoAdubo100, 2));
-	writeExternalEeprom(0, 27, make8(calibracaoAdubo100, 1));
-	writeExternalEeprom(0, 28, make8(calibracaoAdubo100, 0));
+		if(material == SELECIONA_ADUBO) {
+			writeExternalEeprom(0, 13 + i * 4, make8(calibracaoAduboMaterial[i], 3));
+			writeExternalEeprom(0, 14 + i * 4, make8(calibracaoAduboMaterial[i], 2));
+			writeExternalEeprom(0, 15 + i * 4, make8(calibracaoAduboMaterial[i], 1));
+			writeExternalEeprom(0, 16 + i * 4, make8(calibracaoAduboMaterial[i], 0));
 
-	writeExternalEeprom(0, 29, make8(calibracaoSemente10, 3));
-	writeExternalEeprom(0, 30, make8(calibracaoSemente10, 2));
-	writeExternalEeprom(0, 31, make8(calibracaoSemente10, 1));
-	writeExternalEeprom(0, 32, make8(calibracaoSemente10, 0));
+			writeExternalEeprom(0, 73 + i, calibracaoAduboPercentual[i]);
+		}
+		else if(material == SELECIONA_SEMENTE) {
+			writeExternalEeprom(0, 29 + i * 4, make8(calibracaoSementeMaterial[i], 3));
+			writeExternalEeprom(0, 30 + i * 4, make8(calibracaoSementeMaterial[i], 2));
+			writeExternalEeprom(0, 31 + i * 4, make8(calibracaoSementeMaterial[i], 1));
+			writeExternalEeprom(0, 32 + i * 4, make8(calibracaoSementeMaterial[i], 0));
 
-	writeExternalEeprom(0, 33, make8(calibracaoSemente40, 3));
-	writeExternalEeprom(0, 34, make8(calibracaoSemente40, 2));
-	writeExternalEeprom(0, 35, make8(calibracaoSemente40, 1));
-	writeExternalEeprom(0, 36, make8(calibracaoSemente40, 0));
+			writeExternalEeprom(0, 77 + i, calibracaoSementePercentual[i]);
+		}
+	}
 
-	writeExternalEeprom(0, 37, make8(calibracaoSemente70, 3));
-	writeExternalEeprom(0, 38, make8(calibracaoSemente70, 2));
-	writeExternalEeprom(0, 39, make8(calibracaoSemente70, 1));
-	writeExternalEeprom(0, 40, make8(calibracaoSemente70, 0));
-
-	writeExternalEeprom(0, 41, make8(calibracaoSemente100, 3));
-	writeExternalEeprom(0, 42, make8(calibracaoSemente100, 2));
-	writeExternalEeprom(0, 43, make8(calibracaoSemente100, 1));
-	writeExternalEeprom(0, 44, make8(calibracaoSemente100, 0));
+	if(material == SELECIONA_ADUBO) {
+		writeExternalEeprom(0, 81, calibracaoAduboPercentualZero);
+	}
+	else if(material == SELECIONA_SEMENTE) {
+		writeExternalEeprom(0, 82, calibracaoSementePercentualZero);
+	}
 }
 /*==============================================================================
 WRITE EEPROM HECTARIMETRO
@@ -229,7 +221,8 @@ WRITE ALL EEPROM
 ==============================================================================*/
 void writeAllEeprom() {
 	writeEepromConfiguracoes();
-	writeEepromCalibracao();
+	writeEepromCalibracao(SELECIONA_ADUBO);
+	writeEepromCalibracao(SELECIONA_SEMENTE);
 	writeEepromHectarimetro();
 	writeEepromConfiguracaoModulos();
 	writeEepromPulsosPor100m();
@@ -247,15 +240,21 @@ void readEeprom() {
 		tipoSensorVelocidade = readExternalEeprom(0, 11);
 		velocidadeContingencia = readExternalEeprom(0, 12);
 
-		calibracaoAdubo10 = make32(readExternalEeprom(0, 13), readExternalEeprom(0, 14), readExternalEeprom(0, 15), readExternalEeprom(0, 16));
-		calibracaoAdubo40 = make32(readExternalEeprom(0, 17), readExternalEeprom(0, 18), readExternalEeprom(0, 19), readExternalEeprom(0, 20));
-		calibracaoAdubo70 = make32(readExternalEeprom(0, 21), readExternalEeprom(0, 22), readExternalEeprom(0, 23), readExternalEeprom(0, 24));
-		calibracaoAdubo100 = make32(readExternalEeprom(0, 25), readExternalEeprom(0, 26), readExternalEeprom(0, 27), readExternalEeprom(0, 28));
+		for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
+			calibracaoAduboMaterial[i] = make32(readExternalEeprom(0, 13 + i * 4),
+					readExternalEeprom(0, 14 + i * 4),
+					readExternalEeprom(0, 15 + i * 4),
+					readExternalEeprom(0, 16 + i * 4));
 
-		calibracaoSemente10 = make32(readExternalEeprom(0, 29), readExternalEeprom(0, 30), readExternalEeprom(0, 31), readExternalEeprom(0, 32));
-		calibracaoSemente40 = make32(readExternalEeprom(0, 33), readExternalEeprom(0, 34), readExternalEeprom(0, 35), readExternalEeprom(0, 36));
-		calibracaoSemente70 = make32(readExternalEeprom(0, 37), readExternalEeprom(0, 38), readExternalEeprom(0, 39), readExternalEeprom(0, 40));
-		calibracaoSemente100 = make32(readExternalEeprom(0, 41), readExternalEeprom(0, 42), readExternalEeprom(0, 43), readExternalEeprom(0, 44));
+			calibracaoAduboPercentual[i] = readExternalEeprom(0, 73 + i);
+
+			calibracaoSementeMaterial[i] = make32(readExternalEeprom(0, 29 + i * 4),
+					readExternalEeprom(0, 30 + i * 4),
+					readExternalEeprom(0, 31 + i * 4),
+					readExternalEeprom(0, 32 + i * 4));
+
+			calibracaoSementePercentual[i] = readExternalEeprom(0, 77 + i);
+		}
 
 		hodometroMetros = make32(readExternalEeprom(0, 45), readExternalEeprom(0, 46), readExternalEeprom(0, 47), readExternalEeprom(0, 48));
 
@@ -268,6 +267,10 @@ void readEeprom() {
 		setpointHaste = make16(readExternalEeprom(0, 68), readExternalEeprom(0, 69));
 		tamanhoHaste = make16(readExternalEeprom(0, 70), readExternalEeprom(0, 71));
 		quantidadePulsosHaste = readExternalEeprom(0, 72);
+		//73 ao 80 ocupados (calibracao)
+
+		calibracaoAduboPercentualZero = readExternalEeprom(0, 81);
+		calibracaoSementePercentualZero = readExternalEeprom(0, 82);
 	}
 }
 /*==============================================================================
@@ -283,17 +286,31 @@ void apagaEeprom() {
 		tipoSensorVelocidade = SENSOR_GPS;
 		velocidadeContingencia = 8;
 
-		calibracaoAdubo10 = 10;
-		calibracaoAdubo40 = 40;
-		calibracaoAdubo70 = 70;
-		calibracaoAdubo100 = 100;
+		calibracaoAduboMaterial[0] = 20;
+		calibracaoAduboMaterial[1] = 40;
+		calibracaoAduboMaterial[2] = 80;
+		calibracaoAduboMaterial[4] = 100;
 
-		calibracaoSemente10 = 10;
-		calibracaoSemente40 = 40;
-		calibracaoSemente70 = 70;
-		calibracaoSemente100 = 100;
+		calibracaoSementeMaterial[0] = 20;
+		calibracaoSementeMaterial[1] = 40;
+		calibracaoSementeMaterial[2] = 80;
+		calibracaoSementeMaterial[4] = 100;
+
+		calibracaoAduboPercentual[0] = 20;
+		calibracaoAduboPercentual[1] = 40;
+		calibracaoAduboPercentual[2] = 80;
+		calibracaoAduboPercentual[3] = 100;
+
+		calibracaoSementePercentual[0] = 20;
+		calibracaoSementePercentual[1] = 40;
+		calibracaoSementePercentual[2] = 80;
+		calibracaoSementePercentual[3] = 100;
+
+		calibracaoAduboPercentualZero = 0;
+		calibracaoSementePercentualZero = 0;
 
 		hectarimetro = 0;
+		hodometroMetros = 0;
 
 		for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 			configuracaoModuloPotencia[i] = MODULO_DESLIGADO;

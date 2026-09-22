@@ -28,7 +28,6 @@ LEITURA SENSOR DE VELOCIDADE
 void leituraSensorVelocidade() {
 	static uint8_t sensorAcionado = false;
 	static uint16_t contadorVelocidade = 0, contador1s = 0;
-	//uint8_t flagContingencia = false;
 	uint32_t velocidadeMetrosSegundo = 0;
 
 	if(sensorAcionado) {

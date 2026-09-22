@@ -105,7 +105,11 @@ uint8_t
 	tipoSensorVelocidade = SENSOR_GPS,
 	velocidadeContingencia = 8,
 
-	comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL,
+	calibracaoAduboPercentualZero = 0,
+	calibracaoSementePercentualZero = 0,
+	calibracaoMaterialSelecao = SELECIONA_TODOS,
+	calibracaoMaterialPercentual = 0,
+
 	comandoCalibracaoPulsos = CANCELAR_CALIBRACAO_PULSOS,
 	comandoComportas = PARAR_COMPORTAS,
 	comandoHaste = RETORNO_HASTE,
@@ -145,16 +149,6 @@ uint32_t
 	hodometroMetros = 0,
 	distanciaParaUmHectare = 10,
 
-	calibracaoAdubo10 = 10,
-	calibracaoAdubo40 = 40,
-	calibracaoAdubo70 = 70,
-	calibracaoAdubo100 = 100,
-
-	calibracaoSemente10 = 10,
-	calibracaoSemente40 = 40,
-	calibracaoSemente70 = 70,
-	calibracaoSemente100 = 100,
-
 	materialPorMetroAdubo = 0,
 	materialPorMetroSemente = 0;
 
@@ -164,10 +158,17 @@ uint8_t
 
 	configuracaoModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
 	setorModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
-	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS];
+	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS],
+
+	calibracaoAduboPercentual[QUANTIDADE_PONTOS_CALIBRACAO],
+	calibracaoSementePercentual[QUANTIDADE_PONTOS_CALIBRACAO];
 
 uint16_t
 	frequenciaModulo[QUANTIDADE_MAXIMA_MODULOS];
+
+uint32_t
+	calibracaoAduboMaterial[QUANTIDADE_PONTOS_CALIBRACAO],
+	calibracaoSementeMaterial[QUANTIDADE_PONTOS_CALIBRACAO];
 
 char
 	bufferIHM[TAMANHO_BUFFER_IHM],

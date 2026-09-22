@@ -30,6 +30,7 @@ enum BOOL {
 
 #define QUANTIDADE_MAXIMA_MODULOS		8
 #define QUANTIDADE_SETOR_MODULOS		4
+#define QUANTIDADE_PONTOS_CALIBRACAO	4
 
 #define TIMEOUT_MODULO_POTENCIA			10
 #define TIMEOUT_CALIBRACAO_MATERIAL		600
@@ -58,19 +59,12 @@ enum TIPO_SENSOR_VELOCIDADE {
 	ERRO_TIPO_SENSOR_VELOCIDADE
 };
 
-enum COMANDO_CALIBRACAO_MATERIAL {
-	CANCELAR_CALIBRACAO_MATERIAL,
-	ACIONA_ADUBO_10,
-	ACIONA_ADUBO_40,
-	ACIONA_ADUBO_70,
-	ACIONA_ADUBO_100,
+enum COMANDO_SELECAO_MATERIAL {
+	SELECIONA_TODOS,
+	SELECIONA_ADUBO,
+	SELECIONA_SEMENTE,
 
-	ACIONA_SEMENTE_10,
-	ACIONA_SEMENTE_40,
-	ACIONA_SEMENTE_70,
-	ACIONA_SEMENTE_100,
-
-	ERRO_COMANDO_CALIBRACAO_MATERIAL
+	ERRO_SELECAO_MATERIAL
 };
 
 enum COMANDO_CALIBRACAO_PULSOS {
@@ -149,7 +143,11 @@ extern uint8_t
 	tipoSensorVelocidade,
 	velocidadeContingencia,
 
-	comandoCalibracaoMaterial,
+	calibracaoAduboPercentualZero,
+	calibracaoSementePercentualZero,
+	calibracaoMaterialSelecao,
+	calibracaoMaterialPercentual,
+
 	comandoCalibracaoPulsos,
 	comandoComportas,
 	comandoHaste,
@@ -189,16 +187,6 @@ extern uint32_t
 	hodometroMetros,
 	distanciaParaUmHectare,
 
-	calibracaoAdubo10,
-	calibracaoAdubo40,
-	calibracaoAdubo70,
-	calibracaoAdubo100,
-
-	calibracaoSemente10,
-	calibracaoSemente40,
-	calibracaoSemente70,
-	calibracaoSemente100,
-
 	materialPorMetroAdubo,
 	materialPorMetroSemente;
 
@@ -208,10 +196,17 @@ extern uint8_t
 
 	configuracaoModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
 	setorModuloPotencia[QUANTIDADE_MAXIMA_MODULOS],
-	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS];
+	contadorModuloOffline[QUANTIDADE_MAXIMA_MODULOS],
+
+	calibracaoAduboPercentual[QUANTIDADE_PONTOS_CALIBRACAO],
+	calibracaoSementePercentual[QUANTIDADE_PONTOS_CALIBRACAO];
 
 extern uint16_t
 	frequenciaModulo[QUANTIDADE_MAXIMA_MODULOS];
+
+extern uint32_t
+	calibracaoAduboMaterial[QUANTIDADE_PONTOS_CALIBRACAO],
+	calibracaoSementeMaterial[QUANTIDADE_PONTOS_CALIBRACAO];
 
 extern char
 	bufferIHM[TAMANHO_BUFFER_IHM],

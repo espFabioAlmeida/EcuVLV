@@ -10,9 +10,16 @@
 CONSTANTES DO ARQUIVO
 ==============================================================================*/
 #define ESCALA_PWM_100	4095
-#define ESCALA_PWM_70	2866
-#define ESCALA_PWM_40	1638
-#define ESCALA_PWM_10	409
+/*=============================================================================
+CALCULA ESCALA PWM
+==============================================================================*/
+uint16_t calculaEscalaPWM(uint8_t percentual) {
+	if(percentual > 100) {
+		return 0;
+	}
+
+	return map(percentual, 0, 100, 0, ESCALA_PWM_100);
+}
 /*=============================================================================
 CALCULA MATERIAL POR METRO
 ==============================================================================*/
@@ -45,45 +52,53 @@ uint32_t velocidadeMetrosPorMinuto(uint8_t velocidade) {
 CALCULO SETPOINT PWM
 ==============================================================================*/
 uint16_t calculaSetpointPWM(uint32_t materialPorMinuto, uint8_t saida) {
-	uint32_t calibracaoMaterial10 = 0, calibracaoMaterial40 = 0, calibracaoMaterial70 = 0, calibracaoMaterial100 = 0;
+	uint32_t calibracaoMaterial[QUANTIDADE_PONTOS_CALIBRACAO];
+	uint16_t valorPWM[QUANTIDADE_PONTOS_CALIBRACAO];
+	uint16_t valorPWMZero = 0;
 
 	if(!materialPorMinuto) {
 		return 0;
 	}
 
-	if(saida == 1) {
-		calibracaoMaterial10 = calibracaoAdubo10;
-		calibracaoMaterial40 = calibracaoAdubo40;
-		calibracaoMaterial70 = calibracaoAdubo70;
-		calibracaoMaterial100 = calibracaoAdubo100;
-	}
-	else if(saida == 2) {
-		calibracaoMaterial10 = calibracaoSemente10;
-		calibracaoMaterial40 = calibracaoSemente40;
-		calibracaoMaterial70 = calibracaoSemente70;
-		calibracaoMaterial100 = calibracaoSemente100;
-	}
-	else {
+	if(saida == SELECIONA_TODOS || saida >= ERRO_SELECAO_MATERIAL) {
 		return 0;
 	}
 
-	if(materialPorMinuto <= calibracaoMaterial10) {
-		return map(materialPorMinuto, 0, calibracaoMaterial10, 0, ESCALA_PWM_10);
+	if(saida == SELECIONA_ADUBO) {
+		valorPWMZero = calculaEscalaPWM(calibracaoAduboPercentualZero);
+	}
+	else if(saida == SELECIONA_SEMENTE) {
+		valorPWMZero = calculaEscalaPWM(calibracaoSementePercentualZero);
 	}
 
-	if(materialPorMinuto <= calibracaoMaterial40) {
-		return map(materialPorMinuto, calibracaoMaterial10, calibracaoMaterial40, ESCALA_PWM_10, ESCALA_PWM_40);
+	for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
+		if(saida == SELECIONA_ADUBO) {
+			calibracaoMaterial[i] = calibracaoAduboMaterial[i];
+			valorPWM[i] = calculaEscalaPWM(calibracaoAduboPercentual[i]);
+		}
+		else if(saida == SELECIONA_SEMENTE) {
+			calibracaoMaterial[i] = calibracaoSementeMaterial[i];
+			valorPWM[i] = calculaEscalaPWM(calibracaoSementePercentual[i]);
+		}
 	}
 
-	if(materialPorMinuto <= calibracaoMaterial70) {
-		return map(materialPorMinuto, calibracaoMaterial40, calibracaoMaterial70, ESCALA_PWM_40, ESCALA_PWM_70);
+	if(materialPorMinuto <= calibracaoMaterial[0]) {
+		return map(materialPorMinuto, 0, calibracaoMaterial[0], valorPWMZero, valorPWM[0]);
 	}
 
-	if(materialPorMinuto <= calibracaoMaterial100) {
-		return map(materialPorMinuto, calibracaoMaterial70, calibracaoMaterial100, ESCALA_PWM_70, ESCALA_PWM_100);
+	if(materialPorMinuto <= calibracaoMaterial[1]) {
+		return map(materialPorMinuto, calibracaoMaterial[0], calibracaoMaterial[1], valorPWM[0], valorPWM[1]);
 	}
 
-	return ESCALA_PWM_100;
+	if(materialPorMinuto <= calibracaoMaterial[2]) {
+		return map(materialPorMinuto, calibracaoMaterial[1], calibracaoMaterial[2], valorPWM[1], valorPWM[2]);
+	}
+
+	if(materialPorMinuto <= calibracaoMaterial[3]) {
+		return map(materialPorMinuto, calibracaoMaterial[2], calibracaoMaterial[3], valorPWM[2], valorPWM[3]);
+	}
+
+	return valorPWM[3];
 }
 /*==============================================================================
 BUSCAR VALOR MODULO
@@ -164,13 +179,7 @@ void calculaSetpoint() {
 
 	if(flagCalibracaoAdubo) {
 		valorSaidaSemente = 0;
-
-		switch(comandoCalibracaoMaterial) {
-			case ACIONA_ADUBO_10: valorSaidaAdubo = ESCALA_PWM_10; break;
-			case ACIONA_ADUBO_40: valorSaidaAdubo = ESCALA_PWM_40; break;
-			case ACIONA_ADUBO_70: valorSaidaAdubo = ESCALA_PWM_70; break;
-			case ACIONA_ADUBO_100: valorSaidaAdubo = ESCALA_PWM_100; break;
-		}
+		valorSaidaAdubo = calculaEscalaPWM(calibracaoMaterialPercentual);
 
 		if(contadorCalibracaoMaterial >= TIMEOUT_CALIBRACAO_MATERIAL) {
 			contadorCalibracaoMaterial = 0;
@@ -182,13 +191,7 @@ void calculaSetpoint() {
 
 	if(flagCalibracaoSemente) {
 		valorSaidaAdubo = 0;
-
-		switch(comandoCalibracaoMaterial) {
-			case ACIONA_SEMENTE_10: valorSaidaSemente = ESCALA_PWM_10; break;
-			case ACIONA_SEMENTE_40: valorSaidaSemente = ESCALA_PWM_40; break;
-			case ACIONA_SEMENTE_70: valorSaidaSemente = ESCALA_PWM_70; break;
-			case ACIONA_SEMENTE_100: valorSaidaSemente = ESCALA_PWM_100; break;
-		}
+		valorSaidaSemente = calculaEscalaPWM(calibracaoMaterialPercentual);
 
 		if(contadorCalibracaoMaterial >= TIMEOUT_CALIBRACAO_MATERIAL) {
 			contadorCalibracaoMaterial = 0;
@@ -210,7 +213,8 @@ void verificaOperacao() {
 	if(flagSensorLevante) {
 		flagCalibracaoAdubo = false;
 		flagCalibracaoSemente = false;
-		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
+		calibracaoMaterialSelecao = SELECIONA_TODOS;
+		calibracaoMaterialPercentual = 0;
 
 		if(!operacao) {
 			flagOperacao = false;

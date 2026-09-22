@@ -12,7 +12,7 @@ CONSTANTES DO ARQUIVO
 /*==============================================================================
 RESPONDE A SOLICITAÇÃO
 ==============================================================================*/
-void protocoloIHMEnviaResposta(uint8_t comando) {
+void protocoloIHMEnviaResposta(uint8_t comando, uint8_t selecao) {
 	apagaBufferEnvioIHM();
 	strcat(bufferEnviaIHM, "$,");
 	sprintfIHM(comando, 2);
@@ -112,28 +112,36 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			break;
 
 		case 4:
-			sprintfIHM(comandoCalibracaoMaterial, 0);
+			sprintfIHM(calibracaoMaterialSelecao, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(calibracaoMaterialPercentual, 0);
 			strcat(bufferEnviaIHM, ",");
 			break;
 
 		case 5:
 		case 6:
-			sprintfIHM(calibracaoAdubo10, 0);
+			sprintfIHM(selecao, 0);
 			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoAdubo40, 0);
-			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoAdubo70, 0);
-			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoAdubo100, 0);
-			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoSemente10, 0);
-			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoSemente40, 0);
-			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoSemente70, 0);
-			strcat(bufferEnviaIHM, ",");
-			sprintfIHM(calibracaoSemente100, 0);
-			strcat(bufferEnviaIHM, ",");
+			if(selecao == SELECIONA_ADUBO) {
+				sprintfIHM(calibracaoAduboPercentualZero, 0);
+				strcat(bufferEnviaIHM, ",");
+				for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
+					sprintfIHM(calibracaoAduboPercentual[i], 0);
+					strcat(bufferEnviaIHM, ",");
+					sprintfIHM(calibracaoAduboMaterial[i], 0);
+					strcat(bufferEnviaIHM, ",");
+				}
+			}
+			else if(selecao == SELECIONA_SEMENTE) {
+				sprintfIHM(calibracaoSementePercentualZero, 0);
+				strcat(bufferEnviaIHM, ",");
+				for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
+					sprintfIHM(calibracaoSementePercentual[i], 0);
+					strcat(bufferEnviaIHM, ",");
+					sprintfIHM(calibracaoSementeMaterial[i], 0);
+					strcat(bufferEnviaIHM, ",");
+				}
+			}
 			break;
 
 		case 7:
@@ -199,7 +207,7 @@ void protocoloIHMAtualizacaoDados(uint8_t offset) {
 		comandoHaste = ERRO_HASTE;
 	}
 
-	protocoloIHMEnviaResposta(1);
+	protocoloIHMEnviaResposta(1, 0);
 }
 /*==============================================================================
 CONFIGURAÇÕES
@@ -304,109 +312,120 @@ void protocoloIHMConfiguracoes(uint8_t offset) {
 	calculaMaterialPorMetro();
 	calculaQuantidadePulsosSetpointHaste(setpointHaste);
 
-	protocoloIHMEnviaResposta(2);
+	protocoloIHMEnviaResposta(2, 0);
 }
 /*==============================================================================
 ACIONAMENTO CALIBRAÇÃO
 ==============================================================================*/
 void protocoloIHMAcionamentoCalibracao(uint8_t offset) {
-	comandoCalibracaoMaterial = charToByte(bufferIHM[offset + 5]);
+	calibracaoMaterialSelecao = charToByte(bufferIHM[offset + 5]);
+
+	if(calibracaoMaterialSelecao == SELECIONA_TODOS || calibracaoMaterialSelecao >= ERRO_SELECAO_MATERIAL) {
+		calibracaoMaterialSelecao = SELECIONA_TODOS;
+		calibracaoMaterialPercentual = 0;
+	}
+	else {
+		calibracaoMaterialPercentual = 0;
+		for(uint16_t i = offset + 7; isNumber(bufferIHM[i]); i ++) {
+			calibracaoMaterialPercentual *= 10;
+			calibracaoMaterialPercentual += charToByte(bufferIHM[i]);
+		}
+
+		if(calibracaoMaterialPercentual > 100) {
+			calibracaoMaterialPercentual = 0;
+		}
+	}
 
 	if(flagOperacao) {
-		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
+		calibracaoMaterialSelecao = SELECIONA_TODOS;
+		calibracaoMaterialPercentual = 0;
 		flagCalibracaoAdubo = false;
 		flagCalibracaoSemente = false;
 	}
 
-	if(comandoCalibracaoMaterial >= ERRO_COMANDO_CALIBRACAO_MATERIAL) {
-		comandoCalibracaoMaterial = CANCELAR_CALIBRACAO_MATERIAL;
-	}
-
 	verificaCalibracaoMaterial();
 
-	protocoloIHMEnviaResposta(4);
+	protocoloIHMEnviaResposta(4, 0);
 }
 /*==============================================================================
 VALORES DE CALIBRAÇÃO
 ==============================================================================*/
 void protocoloIHMValoresCalibracao(uint8_t offset) {
+	uint32_t valorCalibracao[QUANTIDADE_PONTOS_CALIBRACAO];
+	uint8_t percentualCalibracao[QUANTIDADE_PONTOS_CALIBRACAO];
+	uint8_t percentualZero = 0;
+	uint8_t selecaoMaterial = SELECIONA_TODOS;
+
 	getValueBufferIHM(offset + 5, ',');
 	if(bufferIHMDTO.erro) {
 		return;
 	}
-	calibracaoAdubo10 = bufferIHMDTO.data;
+	selecaoMaterial = bufferIHMDTO.data;
+	if(selecaoMaterial == SELECIONA_TODOS || selecaoMaterial >= ERRO_SELECAO_MATERIAL) {
+		return;
+	}
 
 	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
 	if(bufferIHMDTO.erro) {
 		return;
 	}
-	calibracaoAdubo40 = bufferIHMDTO.data;
+	percentualZero= bufferIHMDTO.data;
 
-	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+	for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
+		getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+		if(bufferIHMDTO.erro) {
+			return;
+		}
+		percentualCalibracao[i] = bufferIHMDTO.data;
+
+		getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
+		if(bufferIHMDTO.erro) {
+			return;
+		}
+		valorCalibracao[i] = bufferIHMDTO.data;
+
+		//validacao
+		if(percentualCalibracao[i] > 100) {
+			percentualCalibracao[i] = 100;
+		}
+		if(valorCalibracao[i] > MAXIMO_VALOR_CALIBRACAO) {
+			valorCalibracao[i] = MAXIMO_VALOR_CALIBRACAO;
+		}
+	}
+
+
+	for(uint8_t i = 0; i < QUANTIDADE_PONTOS_CALIBRACAO; i ++) {
+		if(selecaoMaterial == SELECIONA_ADUBO) {
+			calibracaoAduboPercentualZero = percentualZero;
+			calibracaoAduboPercentual[i] = percentualCalibracao[i];
+			calibracaoAduboMaterial[i] = valorCalibracao[i];
+		}
+		else if(selecaoMaterial == SELECIONA_SEMENTE) {
+			calibracaoSementePercentualZero = percentualZero;
+			calibracaoSementePercentual[i] = percentualCalibracao[i];
+			calibracaoSementeMaterial[i] = valorCalibracao[i];
+		}
+	}
+
+	writeEepromCalibracao(selecaoMaterial);
+	protocoloIHMEnviaResposta(5, selecaoMaterial);
+}
+/*==============================================================================
+LEITURA VALORES DE CALIBRAÇÃO
+==============================================================================*/
+void protocoloIHMleituraValoresCalibracao(uint8_t offset) {
+	uint8_t selecaoMaterial = SELECIONA_TODOS;
+
+	getValueBufferIHM(offset + 5, ',');
 	if(bufferIHMDTO.erro) {
 		return;
 	}
-	calibracaoAdubo70 = bufferIHMDTO.data;
-
-	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
-	if(bufferIHMDTO.erro) {
+	selecaoMaterial = bufferIHMDTO.data;
+	if(selecaoMaterial == SELECIONA_TODOS || selecaoMaterial >= ERRO_SELECAO_MATERIAL) {
 		return;
 	}
-	calibracaoAdubo100 = bufferIHMDTO.data;
 
-	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
-	if(bufferIHMDTO.erro) {
-		return;
-	}
-	calibracaoSemente10 = bufferIHMDTO.data;
-
-	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
-	if(bufferIHMDTO.erro) {
-		return;
-	}
-	calibracaoSemente40 = bufferIHMDTO.data;
-
-	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
-	if(bufferIHMDTO.erro) {
-		return;
-	}
-	calibracaoSemente70 = bufferIHMDTO.data;
-
-	getValueBufferIHM(bufferIHMDTO.offset + 1, ',');
-	if(bufferIHMDTO.erro) {
-		return;
-	}
-	calibracaoSemente100 = bufferIHMDTO.data;
-
-	//Validação dos valores
-	if(calibracaoAdubo10 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoAdubo10 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoAdubo40 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoAdubo40 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoAdubo70 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoAdubo70 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoAdubo100 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoAdubo100 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoSemente10 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoSemente10 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoSemente40 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoSemente40 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoSemente70 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoSemente70 = MAXIMO_VALOR_CALIBRACAO;
-	}
-	if(calibracaoSemente100 > MAXIMO_VALOR_CALIBRACAO) {
-		calibracaoSemente100 = MAXIMO_VALOR_CALIBRACAO;
-	}
-
-	writeEepromCalibracao();
-
-	protocoloIHMEnviaResposta(5);
+	protocoloIHMEnviaResposta(6, selecaoMaterial);
 }
 /*==============================================================================
 CALIBRAÇÃO PULSOS
@@ -419,7 +438,7 @@ void protocoloIHMCalibracaoPulsos(uint8_t offset) {
 	}
 
 	verificaCalibracaoPulsos();
-	protocoloIHMEnviaResposta(7);
+	protocoloIHMEnviaResposta(7, 0);
 }
 /*==============================================================================
 ZERAR HECTARIMETRO
@@ -427,7 +446,7 @@ ZERAR HECTARIMETRO
 void protocoloIHMZerarHectarimetro(uint8_t offset) {
 	hodometroMetros = 0;
 	writeEepromHectarimetro();
-	protocoloIHMEnviaResposta(8);
+	protocoloIHMEnviaResposta(8, 0);
 }
 /*==============================================================================
 CONFIGURAÇÃO MÓDULO POTENCIA
@@ -448,7 +467,7 @@ void protocoloIHMConfiguracaoModuloPotencia(uint8_t offset) {
 	}
 
 	writeEepromConfiguracaoModulos();
-	protocoloIHMEnviaResposta(9);
+	protocoloIHMEnviaResposta(9, 0);
 }
 /*==============================================================================
 PROTOCOLO IHM
@@ -465,17 +484,17 @@ void protocoloIHM() {
 		uint8_t comando = charToByte(bufferIHM[offset + 2]) * 10 + charToByte(bufferIHM[offset + 3]);
 
 		switch(comando) {
-			case 0: protocoloIHMEnviaResposta(comando); break;
+			case 0: protocoloIHMEnviaResposta(comando, 0); break;
 			case 1: protocoloIHMAtualizacaoDados(offset); break;
 			case 2: protocoloIHMConfiguracoes(offset); break;
-			case 3: protocoloIHMEnviaResposta(3); break;
+			case 3: protocoloIHMEnviaResposta(3, 0); break;
 			case 4: protocoloIHMAcionamentoCalibracao(offset); break;
 			case 5: protocoloIHMValoresCalibracao(offset); break;
-			case 6: protocoloIHMEnviaResposta(6); break;
+			case 6: protocoloIHMleituraValoresCalibracao(offset); break;
 			case 7: protocoloIHMCalibracaoPulsos(offset); break;
 			case 8: protocoloIHMZerarHectarimetro(offset); break;
 			case 9: protocoloIHMConfiguracaoModuloPotencia(offset); break;
-			case 10: protocoloIHMEnviaResposta(10); break;
+			case 10: protocoloIHMEnviaResposta(10, 0); break;
 		}
 
 		if(comando <= 9) {
