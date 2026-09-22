@@ -413,7 +413,7 @@ void protocoloIHMCalibracaoPulsos(uint8_t offset) {
 ZERAR HECTARIMETRO
 ==============================================================================*/
 void protocoloIHMZerarHectarimetro(uint8_t offset) {
-	hectarimetro = 0;
+	hodometroMetros = 0;
 	writeEepromHectarimetro();
 	protocoloIHMEnviaResposta(8);
 }

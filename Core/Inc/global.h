@@ -8,7 +8,7 @@
 #ifndef INC_GLOBAL_H_
 #define INC_GLOBAL_H_
 
-#define VERSAO_FIRMWARE 1
+#define VERSAO_FIRMWARE 3
 
 enum BOOL {
 	false,
