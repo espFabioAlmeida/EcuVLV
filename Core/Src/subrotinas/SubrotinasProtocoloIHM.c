@@ -19,6 +19,12 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 	strcat(bufferEnviaIHM, ",");
 
 	switch(comando) {
+		case 0:
+			sprintfIHM(VERSAO_FIRMWARE, 0);
+			strcat(bufferEnviaIHM, ".");
+			sprintfIHM(SUBVERSAO_FIRMWARE, 0);
+			break;
+
 		case 1:
 			calculaHectarimetro();
 			calculaAlturaHaste();
@@ -453,6 +459,7 @@ void protocoloIHM() {
 		uint8_t comando = charToByte(bufferIHM[offset + 2]) * 10 + charToByte(bufferIHM[offset + 3]);
 
 		switch(comando) {
+			case 0: protocoloIHMEnviaResposta(comando); break;
 			case 1: protocoloIHMAtualizacaoDados(offset); break;
 			case 2: protocoloIHMConfiguracoes(offset); break;
 			case 3: protocoloIHMEnviaResposta(3); break;

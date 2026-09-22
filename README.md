@@ -67,11 +67,12 @@ O sistema deve possuir as seguintes configurações: <br>
 1. Largura da máquina (cm), para transformar o deslocamento linear em área <br>
 2. Offset de velocidade, para calibração <br>
 3. Tipo de sensor de velocidade, pulsos ou GPS <br>
-4. Velocidade de contingência, velocidade considerada em caso de falha na leitura <br>
+4. Velocidade de contingência, velocidade considerada em caso de falha na leitura (e acionado pelo operador) <br>
 O sistema também deve possuir a calibração dos saídas de forma independente (adubo e setpoint). <br>
 Na calibração, o operador deve acionar a máquina em: 10%, 40%, 70% ou 100%. E informar ao sistema quantos g/min foi gerado. <br>
 O sistema também deve possuir uma calibração do sensor de velocidade (pulsos). Onde o operador deve andar com a máquina por 100m e o sistema conta quantos pulsos foram gerados nessa distância. <br>
 O sistema também deve possuir um hectarímetro. <br>
+A velocidade de contingência aciona somente quando o operador solicitar. A ECU informa na IHM que está parada e o operador pode solicitar que a contingência seja assumida. Caso o sensor volte a funcionar a contingência é automaticamente desligada. <br>
 <br>
 Os módulos de acionamento, sejam eles esteira ou válvula, serão cadastrados como adubo ou semente e também receberão uma identificação de seção, que pode ser entre 1 e 4. Essa seção agrupa os módulos que poderão serem desligados momentaneamente com a máquina operando. Lembrando que o setpoint é calculado como se todos os módulos estivessem ligados. <br>
 O operador seleciona o que está sendo acionado, entre VOLLVERINI, ADUBO e SEMENTE. Ele poderá selecionar 1, 2 ou as 3 opções juntas. <br>
@@ -85,12 +86,13 @@ O sistema de controle da haste deve ser calibrado com a quantidade de pulsos da 
 O operador deve informar o comprimento total da haste (Fundo de escala). <br>
 
 # Protocolo IHM
-Comando 1: Atualziação dos comandos e dados: $,01,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,\r\n <br>
+Comando 1: Atualziação dos comandos e dados: $,01,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,ACIONA_CONTINGENCIA,\r\n <br>
 OPERACAO: 0=SEM OPERAÇÃO, +1 VOLLVERINI ATIVADO, +2 ADUBO ATIVADO e +4 SEMENTES ATIVADO <br>
 S1,S2,S3,4: 0=DESLIGADO e 1=LIGADO <br>
 COMPORTAS: 0=PARADO, 1=FECHAR e 2=ABRIR <br>
 HASTE: 0=PARADO, 1=SUBIR e 2=DESCER Obs: A haste só opera manualmente com o sensor de levante desligado<br>
-Resposta: $,01,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,FREQ_MODULO1,FREQ_MODULO2,FREQ_MODULO3,FREQ_MODULO4,FREQ_MODULO5,FREQ_MODULO6,FREQ_MODULO7,FREQ_MODULO8,\r\n <br>
+ACIONA_CONTINGENCIA: 0=NÃO ASUSMO, 1=ASSUME <br>
+Resposta: $,01,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MAQUINA_PARADA,CONTINGENCIA_ACIONADA,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,FREQ_MODULO1,FREQ_MODULO2,FREQ_MODULO3,FREQ_MODULO4,FREQ_MODULO5,FREQ_MODULO6,FREQ_MODULO7,FREQ_MODULO8,\r\n <br>
 SP_ADUBO: Setpoint Adubo em kg/ha <br>
 SP_SEMENTE: Setpoint Sementes em kg/ha <br>
 SP_VOLLVERINI: Setpoint Vollverini em cm <br>
@@ -103,6 +105,8 @@ S1,S2,S3,S4: Feedback do valor recebido <br>
 COMPORTAS: Feedback do valor recebido <br>
 HASTE: Feedback do valor recebido <br>
 SENSOR_LEVANTE: 0=standby e 1=operando <br>
+MAQUINA_PARADA: 0=maquina rodando OU standby, 1=máquina parada (operando) <br>
+CONTINGENCIA_ACIONADA: 0=não acionada, 1=acionada <br>
 MODULO1_ONLINE ~ MODULO8_ONLINE: 1=ONLINE, 0=OFFLINE <br>
 FREQ_MODULO1 ~ FREQ_MODULO2: Frequencia lida pela entrada do módulo, entre 0 e 999 <br>
 <br>
@@ -121,16 +125,21 @@ Resposta: Retorna os mesmos dados enviados apenas para conferência <br>
 Comando 3: Leitura Configurações: $,03,\r\n <br>
 Resposta: Envia os mesmos dados, na mesma ordem, do comando 2. <br>
 <br>
-Comando 4: Acionamento Calibração: $,04,COMANDO_CALIBRACAO,\r\n <br>
-COMANDO_CALIBRACAO: 0=SEM COMANDO OU CANCELAR CALIBRACAO, 1=ACIONA_10_ADUBO, 2=ACIONA_40_ADUBO, 3=ACIONA_70_ADUBO, 4=ACIONA_100_ADUBO, 5=ACIONA_10_SEMENTE, 6=ACIONA_40_SEMENTE, 7=ACIONA_70_SEMENTE e 8=ACIONA_100_SEMENTE <br>
+Comando 4: Acionamento Calibração: $,04,N_MATERIAL,PERCENTUAL_CALIBRACAO,\r\n <br>
+N_MATERIAL: 0=DESLIGA TUDO, 1=ADUBO (MATERIAL 1), 2=SEMENTE(MATERIAL 2) <br>
+PERCENTUAL_CALIBRACAO: VALOR DO PERCENTUAL ACIONADO (entre 0 e 100) <br>
 Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
 <br>
-Comando 5: Enviar dados da calibração: $,05,ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100,SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100,\r\n <br>
-ADUBO_10,ADUBO_40,ADUBO_70,ADUBO_100: Valores de calibração em g/min do adubo. Entre 0 e 999999g/min <br>
-SEMENTE_10,SEMENTE_40,SEMENTE_70,SEMENTE_100: Valores de calibração em g/min da semente. Entre 0 e 999999g/min <br>
+Comando 5: Enviar dados da calibração: $,05,N_MATERIAL,PERCENTUAL_ZERO,PERCENTUAL1,VALOR1,PERCENTUAL2,VALOR2,PERCENTUAL3,VALOR3,PERCENTUAL4,VALOR4,\r\n <br>
+N_MATERIAL: 1=ADUBO (MATERIAL 1), 2=SEMENTE(MATERIAL 2) - Qual material se refere os dados <br>
+PERCENTUAL_ZERO: Valor percentual que, abaixo disso, motor fica parado (entre 0 e 100) <br>
+PERCENTUAL1 ~ PERCENTUAL4: Valor percentual de cada uma das calibrações. O percentual 4 tem que ser maior que o 3, o 3 maior que o 2 e assim por diante. E todos devem serem maiores que o ZERO. <br>
+VALOR1 ~ VALOR4: Valores de calibração em g/min. Entre 0 e 999999g/min. O valor 4 tem que ser maior que o 3, 3 maior que o 2 e assim por diante. <br>
+Importante que o percentual 4 e o valor 4 seja o valor faixa. O sistema não acionará o motor acima do percentual 4. <br>
 Resposta: Retorna os mesmos dados enviados, apenas para conferência <br>
 <br>
-Comando 6: Leitura de dados da calibração: $,06,\r\n <br>
+Comando 6: Leitura de dados da calibração: $,06,N_MATERIAL,\r\n <br>
+N_MATERIAL: 1=ADUBO (MATERIAL 1), 2=SEMENTE(MATERIAL 2) - Qual material se refere os dados <br>
 Respsota: Envia os mesmos dados, na mesma ordem, do comando 5. <br>
 <br>
 Comando 7: Calibração do sensor de pulsos: $,07,CALIBRACAO_SENSOR_PULSOS,\r\n <br>
