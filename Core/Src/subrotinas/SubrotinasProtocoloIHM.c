@@ -64,6 +64,10 @@ void protocoloIHMEnviaResposta(uint8_t comando) {
 			strcat(bufferEnviaIHM, ",");
 			sprintfIHM(flagSensorLevante, 0);
 			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(flagMaquinaParada, 0);
+			strcat(bufferEnviaIHM, ",");
+			sprintfIHM(flagContingenciaAcionada, 0);
+			strcat(bufferEnviaIHM, ",");
 
 			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 				if(contadorModuloOffline[i]) {
@@ -179,6 +183,8 @@ void protocoloIHMAtualizacaoDados(uint8_t offset) {
 	if(!flagOperacao && comandoHaste != RETORNO_HASTE) {
 		comandoHaste = charToByte(bufferIHM[offset + 17]);
 	}
+
+	flagAcionaContingencia = charToBool(bufferIHM[offset + 19]);
 
 	//Validação dos dados
 	if(operacao > 7) { //todas as opções ligadas
