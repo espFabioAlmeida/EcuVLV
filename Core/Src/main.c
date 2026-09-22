@@ -84,6 +84,10 @@ uint8_t
 	flagCalibracaoAdubo = false,
 	flagCalibracaoSemente = false,
 
+	flagAcionaContingencia = false,
+	flagContingenciaAcionada = false,
+	flagMaquinaParada = false,
+
 	flagHomeHaste = false,
 	flagFimCursoHaste = false,
 

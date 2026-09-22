@@ -128,6 +128,10 @@ extern uint8_t
 	flagCalibracaoAdubo,
 	flagCalibracaoSemente,
 
+	flagAcionaContingencia,
+	flagContingenciaAcionada,
+	flagMaquinaParada, //aciona somente se flagOperacao=true
+
 	flagHomeHaste,
 	flagFimCursoHaste,
 

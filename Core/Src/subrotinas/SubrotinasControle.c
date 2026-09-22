@@ -146,6 +146,12 @@ void calculaSetpoint() {
 	uint32_t velocidadeMin = 0;
 
 	if(flagOperacao) {
+		if(flagMaquinaParada) {
+			valorSaidaAdubo = 0;
+			valorSaidaSemente = 0;
+			return;
+		}
+
 		velocidadeMin = velocidadeMetrosPorMinuto(velocidade);
 		materialPorMinuto *= velocidadeMin;
 		valorSaidaAdubo = calculaSetpointPWM(materialPorMinuto, 1);

@@ -28,7 +28,7 @@ LEITURA SENSOR DE VELOCIDADE
 void leituraSensorVelocidade() {
 	static uint8_t sensorAcionado = false;
 	static uint16_t contadorVelocidade = 0, contador1s = 0;
-	uint8_t flagContingencia = false;
+	//uint8_t flagContingencia = false;
 	uint32_t velocidadeMetrosSegundo = 0;
 
 	if(sensorAcionado) {
@@ -64,21 +64,35 @@ void leituraSensorVelocidade() {
 		valor /= 10000; //devolve os 5 dígitos emprestados
 
 		velocidade = valor;
-		if(velocidade < VELOCIDADE_MINIMA) { //assume a contingencia
+
+		if(velocidade >= VELOCIDADE_MINIMA) { //velocidade acima da minima
+			flagMaquinaParada = false;
+			flagContingenciaAcionada = false;
+		}
+		else { //velocidade abaixo da minima
 			if(flagOperacao) {
-				velocidade = velocidadeContingencia;
-				valor = velocidade;
-				valor *= 10000; //empresta 5 digitos
-				valor /= TRANSFORMA_MS_EM_KMH; //transofmra novamente em m/s, removendo 1 casa decimal
-				velocidadeMetrosSegundo = valor; //atribui novo valor ao hectarimetro
-				flagContingencia = true;
+				flagMaquinaParada = true;
+				if(flagAcionaContingencia) {
+					flagContingenciaAcionada = true;
+				}
+
+				if(flagContingenciaAcionada) {
+					velocidade = velocidadeContingencia;
+					valor = velocidade;
+					valor *= 10000; //empresta 5 digitos
+					valor /= TRANSFORMA_MS_EM_KMH; //transofmra novamente em m/s, removendo 1 casa decimal
+					velocidadeMetrosSegundo = valor; //atribui novo valor ao hectarimetro
+					flagMaquinaParada = false;
+				}
 			}
-			else {
+			else { //maquina desligada
+				flagMaquinaParada = false; //true somente quando maquina ligada
+				flagContingenciaAcionada = false;
 				velocidade = 0;
 			}
 		}
 
-		if(velocidade && !flagContingencia) { //aplica o offset da velocidade apenas se fora da contingencia
+		if(velocidade >= VELOCIDADE_MINIMA && !flagContingenciaAcionada) { //aplica o offset da velocidade apenas se fora da contingencia
 			uint8_t velocidadeAnterior = velocidade;
 			if(flagOffsetVelocidadeNegativo) {
 				if(velocidade > offsetVelocidade) {
@@ -100,7 +114,7 @@ void leituraSensorVelocidade() {
 			}
 		}
 
-		if(flagOperacao) { //hectarimetro
+		if(flagOperacao && velocidade >= VELOCIDADE_MINIMA) { //hectarimetro
 			velocidadeMetrosSegundo /= 100; //remove 3 casas decimais
 			hodometroMetros += velocidadeMetrosSegundo;
 			if(hodometroMetros >= ESTOURO_HODOMETRO_EM_M) {
