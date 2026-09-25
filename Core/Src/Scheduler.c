@@ -70,6 +70,10 @@ void tarefas1s() {
 			contadorModuloOffline[i] --;
 		}
 	}
+
+	if(contadorFalhaEsteira < TIMEOUT_FALHA_ESTEIRA) {
+		contadorFalhaEsteira ++;
+	}
 }
 /*==============================================================================
 SCHEDULER

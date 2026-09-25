@@ -114,6 +114,8 @@ uint8_t
 	comandoComportas = PARAR_COMPORTAS,
 	comandoHaste = RETORNO_HASTE,
 
+  contadorFalhaEsteira = 0,
+
 	contadorBufferIHM = 0,
 	contadorBufferSensorAcidez = 0;
 

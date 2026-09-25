@@ -184,6 +184,7 @@ void leituraSensorPulsosHaste() {
 LEITURA ENTRADAS DIGITAIS
 ==============================================================================*/
 void leituraEntradasDigitais() {
+	static uint8_t flagWhileInput6 = false;
 
 	if(flagSensorLevante) {
 		if(debounceInverso(IN2_GPIO_Port, IN2_Pin)) {
@@ -215,6 +216,19 @@ void leituraEntradasDigitais() {
 	else {
 		if(debounce(IN4_GPIO_Port, IN4_Pin)) {
 			flagFimCursoHaste = true;
+		}
+	}
+
+	if(flagWhileInput6) {
+		if(debounceInverso(IN6_GPIO_Port, IN6_Pin)) {
+			flagWhileInput6 = false;
+			contadorFalhaEsteira = 0;
+		}
+	}
+	else {
+		if(debounce(IN6_GPIO_Port, IN6_Pin)) {
+			flagWhileInput6 = true;
+			contadorFalhaEsteira = 0;
 		}
 	}
 }

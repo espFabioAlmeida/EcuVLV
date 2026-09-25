@@ -13,7 +13,7 @@ IN2: Sensor de Levante <br>
 IN3: Home do controle de altura da haste<br>
 IN4: Fim de curso do controle de altura da haste <br>
 IN5: Leitura de pulsos do controle de altura da haste<br>
-IN6: Livre <br>
+IN6: Leitura CORT-02 MEDIA - Esteiras <br>
 # Devices
 Barramento CAN: <br>
 Acelerômetro/Inclinômetro (por hora, não utiliza) <br>
@@ -57,6 +57,7 @@ Conector A: <br>
 <br>
 Conector B: <br>
 Não conectado (Todo) <br>
+![Conector](PINAGEM.jpg) <br>
 
 # Escopo
 O sistema deve controlar a aplicação de material, conforme programado. <br>
@@ -92,7 +93,7 @@ S1,S2,S3,4: 0=DESLIGADO e 1=LIGADO <br>
 COMPORTAS: 0=PARADO, 1=FECHAR e 2=ABRIR <br>
 HASTE: 0=PARADO, 1=SUBIR e 2=DESCER Obs: A haste só opera manualmente com o sensor de levante desligado<br>
 ACIONA_CONTINGENCIA: 0=NÃO ASUSMO, 1=ASSUME <br>
-Resposta: $,01,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MAQUINA_PARADA,CONTINGENCIA_ACIONADA,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,FREQ_MODULO1,FREQ_MODULO2,FREQ_MODULO3,FREQ_MODULO4,FREQ_MODULO5,FREQ_MODULO6,FREQ_MODULO7,FREQ_MODULO8,\r\n <br>
+Resposta: $,01,SP_ADUBO,SP_SEMENTE,SP_VOLLVERINI,VELOCIDADE,ALTURA,ACIDEZ,HECTARIMETRO,OPERACAO,S1,S2,S3,S4,COMPORTAS,HASTE,SENSOR_LEVANTE,MAQUINA_PARADA,CONTINGENCIA_ACIONADA,STATUS_ESTEIRA,MODULO1_ONLINE,MODULO2_ONLINE,MODULO3_ONLINE,MODULO4_ONLINE,MODULO5_ONLINE,MODULO6_ONLINE,MODULO7_ONLINE,MODULO8_ONLINE,FREQ_MODULO1,FREQ_MODULO2,FREQ_MODULO3,FREQ_MODULO4,FREQ_MODULO5,FREQ_MODULO6,FREQ_MODULO7,FREQ_MODULO8,\r\n <br>
 SP_ADUBO: Setpoint Adubo em kg/ha <br>
 SP_SEMENTE: Setpoint Sementes em kg/ha <br>
 SP_VOLLVERINI: Setpoint Vollverini em cm <br>
@@ -107,6 +108,7 @@ HASTE: Feedback do valor recebido <br>
 SENSOR_LEVANTE: 0=standby e 1=operando <br>
 MAQUINA_PARADA: 0=maquina rodando OU standby, 1=máquina parada (operando) <br>
 CONTINGENCIA_ACIONADA: 0=não acionada, 1=acionada <br>
+STATUS_ESTEIRA: 0=sem movimento, 1=modivmento detectado <br>
 MODULO1_ONLINE ~ MODULO8_ONLINE: 1=ONLINE, 0=OFFLINE <br>
 FREQ_MODULO1 ~ FREQ_MODULO2: Frequencia lida pela entrada do módulo, entre 0 e 999 <br>
 <br>

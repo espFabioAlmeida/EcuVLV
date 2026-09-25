@@ -34,6 +34,7 @@ enum BOOL {
 
 #define TIMEOUT_MODULO_POTENCIA			10
 #define TIMEOUT_CALIBRACAO_MATERIAL		600
+#define TIMEOUT_FALHA_ESTEIRA			5
 
 enum COMANDO_COMPORTAS {
 	PARAR_COMPORTAS,
@@ -151,6 +152,8 @@ extern uint8_t
 	comandoCalibracaoPulsos,
 	comandoComportas,
 	comandoHaste,
+
+	contadorFalhaEsteira,
 
 	contadorBufferIHM,
 	contadorBufferSensorAcidez;

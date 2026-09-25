@@ -69,6 +69,13 @@ void protocoloIHMEnviaResposta(uint8_t comando, uint8_t selecao) {
 			sprintfIHM(flagContingenciaAcionada, 0);
 			strcat(bufferEnviaIHM, ",");
 
+			if(contadorFalhaEsteira >= TIMEOUT_FALHA_ESTEIRA) {
+				strcat(bufferEnviaIHM, "0,");
+			}
+			else {
+				strcat(bufferEnviaIHM, "1,");
+			}
+
 			for(uint8_t i = 0; i < QUANTIDADE_MAXIMA_MODULOS; i ++) {
 				if(contadorModuloOffline[i]) {
 					strcat(bufferEnviaIHM, "1,");
