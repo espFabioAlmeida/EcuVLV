@@ -56,6 +56,7 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart7;
 UART_HandleTypeDef huart8;
 UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_uart7_rx;
 DMA_HandleTypeDef hdma_usart3_rx;
 
 /* USER CODE BEGIN PV */
@@ -210,36 +211,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	}
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-
-	if(huart-> Instance==UART7) { // IHM
-		if(ihmDataIn == 0x00) {
-			return;
-		}
-
-		bufferIHM[contadorBufferIHM] = ihmDataIn;
-		contadorBufferIHM ++;
-
-		if(contadorBufferIHM >= TAMANHO_BUFFER_IHM) {
-			apagaBufferIHM();
-		}
-
-		if(ihmDataIn == 0x0A) {
-			flagPacoteIHM = true;
-		}
-	}
-
-	if(huart-> Instance==USART3) { // Sensor de acidez
-		bufferSensorAvidez[contadorBufferSensorAcidez] = sensorAcidezDataIn;
-		contadorBufferSensorAcidez ++;
-
-		if(contadorBufferSensorAcidez >= TAMANHO_BUFFER_SENSOR_ACIDEZ) {
-			apagaBufferSensorAcidez();
-		}
-
-		//TODO: VERIFICAR A FORMA QUE INDETIFICA O FIM DOS DADOS RECEBIDOS
-	}
-
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+    if(huart->Instance == UART7) {
+    	if(Size && bufferIHM[Size - 1] == 0x0A) {
+    		flagPacoteIHM = true;
+    	}
+    	else {
+    		apagaBufferIHM();
+    	}
+    }
 }
 
 
@@ -321,7 +301,7 @@ int main(void)
   on(LED_COM3_GPIO_Port, LED_COM3_Pin);
   on(LED_CAN2_GPIO_Port, LED_CAN2_Pin);
 
-  //HAL_UART_Receive_DMA(&huart3, &sensorAcidezDataIn, 1); //Sensor Acidez
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart7, &bufferIHM, TAMANHO_BUFFER_IHM);
 
   /* USER CODE END 2 */
 
@@ -353,7 +333,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_UART_Receive_IT(&huart7, &ihmDataIn, 1);
+	  //HAL_UART_Receive_IT(&huart7, &ihmDataIn, 1);
   }
   /* USER CODE END 3 */
 }
@@ -854,6 +834,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+  /* DMA1_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
 
 }
 

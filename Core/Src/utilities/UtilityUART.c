@@ -25,6 +25,8 @@ APAGA BUFFER IHM
 void apagaBufferIHM() {
 	contadorBufferIHM = 0;
 	memset(bufferIHM, 0x00, TAMANHO_BUFFER_IHM);
+
+	HAL_UARTEx_ReceiveToIdle_DMA(&huart7, &bufferIHM, TAMANHO_BUFFER_IHM);
 }
 /*=============================================================================
 SPRINTF IHM

@@ -504,7 +504,7 @@ void protocoloIHM() {
 			case 10: protocoloIHMEnviaResposta(10, 0); break;
 		}
 
-		if(comando <= 9) {
+		if(comando <= 10) {
 			flagLedIHM = true;
 		}
 	}
